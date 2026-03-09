@@ -1,0 +1,26 @@
+# Fichiers et dossiers à exclure du contexte Docker (build plus rapide, image plus légère)
+.git
+.gitignore
+.idea
+.vscode
+*.md
+.env
+.env.local
+.env.*.local
+docker-compose*.yml
+Dockerfile
+.dockerignore
+
+# Dépendances et artefacts (réinstallés ou générés dans le conteneur)
+/vendor
+/node_modules
+/var/cache/*
+/var/log/*
+/var/share
+
+# Tests et outils de dev
+/tests
+.phpunit.result.cache
+phpunit.xml
+phpstan.neon
+phpstan.neon.dist
