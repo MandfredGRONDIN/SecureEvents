@@ -1,29 +1,21 @@
-{# Vue du dernier événement affiché sur la page /events #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Événements - SecureEvents{% endblock %}
+{% block title %}Événements{% endblock %}
 
 {% block body %}
-    <main class="event-page">
-        <h1>Dernier événement</h1>
-
-        <article class="event-card">
-            <h2>{{ event.name }}</h2>
-            <p class="event-description">{{ event.description }}</p>
-
-            <dl class="event-details">
-                <dt>Lieu</dt>
-                <dd>{{ event.location }}</dd>
-
-                <dt>Début</dt>
-                <dd>{{ event.startAt|date('d/m/Y à H:i') }}</dd>
-
-                <dt>Fin</dt>
-                <dd>{{ event.endAt|date('d/m/Y à H:i') }}</dd>
-
-                <dt>Capacité</dt>
-                <dd>{{ event.capacity }} places</dd>
-            </dl>
-        </article>
-    </main>
+<div class="example-wrapper">
+    <h1>Événements</h1>
+    {% if events|length > 0 %}
+        <ul>
+            {% for event in events %}
+                <li>
+                    <a href="{{ path('app_events_show', { id: event.id }) }}">{{ event.title }}</a>
+                    — {{ event.startDate|date('d/m/Y') }} — {{ event.location }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun événement pour le moment.</p>
+    {% endif %}
+</div>
 {% endblock %}
