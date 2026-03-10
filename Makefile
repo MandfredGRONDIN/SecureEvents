@@ -16,6 +16,7 @@ help:
 	@echo "  make build       - Construire l'image de l'app"
 	@echo "  make rebuild     - Reconstruire sans cache et redémarrer"
 	@echo "  make install     - composer install dans le conteneur"
+	@echo "  make migration-generate - Générer une migration (diff entités / base)"
 	@echo "  make migrate     - Exécuter les migrations Doctrine"
 	@echo "  make schema-update - Mettre à jour le schéma DB depuis les entités"
 	@echo "  make cache-clear - Vider le cache Symfony"
@@ -45,6 +46,10 @@ rebuild:
 # Installer les dépendances Composer
 install:
 	$(EXEC_APP) composer install
+
+# Générer une migration à partir des entités (diff avec la base)
+migration-generate:
+	$(EXEC_APP) php bin/console doctrine:migrations:diff
 
 # Exécuter les migrations Doctrine
 migrate:
