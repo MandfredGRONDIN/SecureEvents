@@ -1,0 +1,37 @@
+{# Vue de détail d'un utilisateur sur /users/{id} #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateur {{ user.firstName }} {{ user.lastName }} - SecureEvents{% endblock %}
+
+{% block body %}
+    <main class="user-page">
+        <header>
+            <h1>Fiche utilisateur</h1>
+            <p class="user-subtitle">
+                Détail du compte n°{{ user.id }}
+            </p>
+        </header>
+
+        <section class="user-card">
+            <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+
+            <dl class="user-details">
+                <dt>Email</dt>
+                <dd>{{ user.email }}</dd>
+
+                <dt>Rôles</dt>
+                <dd>
+                    {% if user.roles is not empty %}
+                        {{ user.roles|join(', ') }}
+                    {% else %}
+                        Aucun rôle défini
+                    {% endif %}
+                </dd>
+
+                <dt>Créé le</dt>
+                <dd>{{ user.createdAt|date('d/m/Y') }}</dd>
+            </dl>
+        </section>
+    </main>
+{% endblock %}
+
