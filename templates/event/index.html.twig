@@ -1,29 +1,45 @@
-{# Vue du dernier événement affiché sur la page /events #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Événements - SecureEvents{% endblock %}
+{% block title %}Event index{% endblock %}
 
 {% block body %}
-    <main class="event-page">
-        <h1>Dernier événement</h1>
+    <h1>Event index</h1>
 
-        <article class="event-card">
-            <h2>{{ event.name }}</h2>
-            <p class="event-description">{{ event.description }}</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>StartDate</th>
+                <th>Location</th>
+                <th>MaxCapacity</th>
+                <th>IsPublished</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.id }}</td>
+                <td>{{ event.title }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.startDate ? event.startDate|date('Y-m-d') : '' }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.maxCapacity }}</td>
+                <td>{{ event.isPublished ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_event_show', {'id': event.id}) }}">show</a>
+                    <a href="{{ path('app_event_edit', {'id': event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-            <dl class="event-details">
-                <dt>Lieu</dt>
-                <dd>{{ event.location }}</dd>
-
-                <dt>Début</dt>
-                <dd>{{ event.startAt|date('d/m/Y à H:i') }}</dd>
-
-                <dt>Fin</dt>
-                <dd>{{ event.endAt|date('d/m/Y à H:i') }}</dd>
-
-                <dt>Capacité</dt>
-                <dd>{{ event.capacity }} places</dd>
-            </dl>
-        </article>
-    </main>
+    <a href="{{ path('app_event_new') }}">Create new</a>
 {% endblock %}
