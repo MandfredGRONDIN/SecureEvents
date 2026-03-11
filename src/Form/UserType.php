@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\DataTransformer\RolesToRoleChoiceTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,7 +25,12 @@ class UserType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('password')
+            ->add('plainPassword', PasswordType::class, [
+                'label' => 'Mot de passe',
+                'mapped' => false,
+                'required' => $options['require_password'],
+                'help' => $options['require_password'] ? null : 'Laisser vide pour ne pas modifier.',
+            ])
             ->add('roles', ChoiceType::class, [
                 'label' => 'Rôle',
                 'choices' => self::ROLE_CHOICES,
@@ -43,6 +49,8 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'require_password' => true,
         ]);
+        $resolver->setAllowedTypes('require_password', 'bool');
     }
 }

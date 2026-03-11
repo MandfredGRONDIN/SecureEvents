@@ -1,7 +1,7 @@
 # Makefile pour le projet Symfony SecureEvents (Docker)
 # Usage : make [cible] ou make help
 
-.PHONY: help up down build rebuild install migrate schema-update cache-clear console logs shell test
+.PHONY: help up down build rebuild install migrate schema-update cache-clear console logs shell test db-reset
 
 # Commande Docker Compose (depuis ce répertoire)
 DOCKER_COMPOSE = docker compose
@@ -24,6 +24,7 @@ help:
 	@echo "  make logs        - Afficher les logs du service app"
 	@echo "  make shell       - Ouvrir un shell dans le conteneur app"
 	@echo "  make test        - Lancer les tests PHPUnit"
+	@echo "  make db-reset    - Réinitialiser la BDD (drop, create, migrate) et créer un utilisateur"
 	@echo ""
 
 # Démarrer les conteneurs en arrière-plan
@@ -78,3 +79,12 @@ shell:
 # Lancer les tests PHPUnit
 test:
 	$(EXEC_APP) php bin/phpunit
+
+# Réinitialiser la BDD et créer un utilisateur (admin@secureevents.local / admin par défaut)
+# Options : make db-reset EMAIL=... PASSWORD=... FIRST=... LAST=...
+db-reset:
+	$(EXEC_APP) php bin/console app:db:reset-with-user \
+		--email="$(or $(EMAIL),admin@admin.fr)" \
+		--password="$(or $(PASSWORD),admin)" \
+		--first-name="$(or $(FIRST),Admin)" \
+		--last-name="$(or $(LAST),SecureEvents)"
