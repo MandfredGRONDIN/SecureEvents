@@ -1,37 +1,46 @@
-{# Vue de détail d'un utilisateur sur /users/{id} #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Utilisateur {{ user.firstName }} {{ user.lastName }} - SecureEvents{% endblock %}
+{% block title %}User{% endblock %}
 
 {% block body %}
-    <main class="user-page">
-        <header>
-            <h1>Fiche utilisateur</h1>
-            <p class="user-subtitle">
-                Détail du compte n°{{ user.id }}
-            </p>
-        </header>
+    <h1>User</h1>
 
-        <section class="user-card">
-            <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ user.password }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ user.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ user.lastName }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ user.createdAt ? user.createdAt|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
 
-            <dl class="user-details">
-                <dt>Email</dt>
-                <dd>{{ user.email }}</dd>
+    <a href="{{ path('app_user_index') }}">back to list</a>
 
-                <dt>Rôles</dt>
-                <dd>
-                    {% if user.roles is not empty %}
-                        {{ user.roles|join(', ') }}
-                    {% else %}
-                        Aucun rôle défini
-                    {% endif %}
-                </dd>
+    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
 
-                <dt>Créé le</dt>
-                <dd>{{ user.createdAt|date('d/m/Y') }}</dd>
-            </dl>
-        </section>
-    </main>
+    {{ include('user/_delete_form.html.twig') }}
 {% endblock %}
-
