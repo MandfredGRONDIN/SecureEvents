@@ -15,16 +15,25 @@ class ReservationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
             ->add('participant', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => fn (User $user) => sprintf(
+                    '#%d • %s %s <%s>',
+                    $user->getId(),
+                    (string) $user->getFirstName(),
+                    (string) $user->getLastName(),
+                    (string) $user->getEmail(),
+                ),
+                'placeholder' => 'Select a user',
             ])
             ->add('Event', EntityType::class, [
                 'class' => Event::class,
-                'choice_label' => 'id',
+                'choice_label' => fn (Event $event) => sprintf(
+                    '#%d • %s',
+                    $event->getId(),
+                    (string) $event->getTitle()
+                ),
+                'placeholder' => 'Select an event',
             ])
         ;
     }
