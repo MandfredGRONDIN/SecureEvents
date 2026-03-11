@@ -3,9 +3,17 @@
 {% block title %}New Reservation{% endblock %}
 
 {% block body %}
-    <h1>Create new Reservation</h1>
+    <div class="flex flex-col gap-6">
+        <div>
+            <h1 class="font-display text-2xl tracking-wide text-slate-50">Create reservation</h1>
+            <p class="mt-1 text-sm text-slate-400">Nouvelle entrée — conservée pour audit.</p>
+        </div>
 
-    {{ include('reservation/_form.html.twig') }}
+        {{ include('reservation/_form.html.twig') }}
 
-    <a href="{{ path('app_reservation_index') }}">back to list</a>
+        <a href="{{ path('app_reservation_index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-slate-100">
+            <span class="font-display">←</span>
+            <span>back to list</span>
+        </a>
+    </div>
 {% endblock %}
