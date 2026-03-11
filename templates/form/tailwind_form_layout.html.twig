@@ -1,0 +1,72 @@
+{# Tailwind-oriented form theme for Symfony Forms #}
+{% use "form_div_layout.html.twig" %}
+
+{% block form_start %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' space-y-5')|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_row %}
+    {% set row_attr = row_attr|default({})|merge({class: (row_attr.class|default('') ~ ' space-y-2')|trim}) %}
+    {% set attr = row_attr %}
+    <div{{ block('attributes') }}>
+        {{ form_label(form) }}
+        {{ form_widget(form) }}
+        {{ form_errors(form) }}
+        {% if help is not empty %}
+            <p class="text-xs text-slate-400">{{ help }}</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block form_label %}
+    {% if label is same as(false) %}
+    {% else %}
+        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' block text-sm font-medium text-slate-200')|trim}) %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <ul class="mt-2 space-y-1 text-sm text-rose-300">
+            {% for error in errors %}
+                <li class="flex gap-2">
+                    <span class="mt-0.5 inline-block h-2 w-2 rounded-full bg-rose-400/90"></span>
+                    <span>{{ error.message }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block widget_attributes %}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' w-full')|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_widget_simple %}
+    {% set type = type|default('text') %}
+    {% set base = 'block w-full rounded-xl border border-slate-700/70 bg-slate-950/40 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 shadow-sm outline-none ring-0 transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/20 disabled:opacity-60' %}
+    {% set attr = attr|merge({class: (base ~ ' ' ~ (attr.class|default('')))|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block textarea_widget %}
+    {% set base = 'block w-full rounded-xl border border-slate-700/70 bg-slate-950/40 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 shadow-sm outline-none ring-0 transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/20 disabled:opacity-60 min-h-28' %}
+    {% set attr = attr|merge({class: (base ~ ' ' ~ (attr.class|default('')))|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block choice_widget_collapsed %}
+    {% set base = 'block w-full rounded-xl border border-slate-700/70 bg-slate-950/40 px-3 py-2 text-sm text-slate-100 shadow-sm outline-none ring-0 transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-500/20 disabled:opacity-60' %}
+    {% set attr = attr|merge({class: (base ~ ' ' ~ (attr.class|default('')))|trim}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block checkbox_widget %}
+    {% set base = 'h-4 w-4 rounded border-slate-700 bg-slate-950 text-cyan-400 focus:ring-cyan-500/30 focus:ring-2' %}
+    {% set attr = attr|merge({class: (base ~ ' ' ~ (attr.class|default('')))|trim}) %}
+    {{ parent() }}
+{% endblock %}
+

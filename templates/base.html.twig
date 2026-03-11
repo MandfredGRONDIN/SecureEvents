@@ -2,16 +2,122 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            {# Tailwind (CDN) for a build-free, consistent UI #}
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                ink: {
+                                    950: '#050A12',
+                                    900: '#07101C',
+                                    800: '#0B1B2E'
+                                },
+                                neon: {
+                                    300: '#65F7E9',
+                                    400: '#29E7D6',
+                                    500: '#10CFC0'
+                                },
+                                pulse: {
+                                    400: '#8B5CF6',
+                                    500: '#7C3AED'
+                                }
+                            },
+                            boxShadow: {
+                                glow: '0 0 0 1px rgba(41,231,214,.25), 0 0 40px rgba(16,207,192,.10)',
+                                glowStrong: '0 0 0 1px rgba(41,231,214,.35), 0 0 60px rgba(16,207,192,.18)'
+                            }
+                        }
+                    }
+                }
+            </script>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+            <style>
+                :root {
+                    --bg0: #050A12;
+                    --bg1: #07101C;
+                    --fg: #E6F0FF;
+                    --muted: rgba(230, 240, 255, .72);
+                    --line: rgba(101, 247, 233, .16);
+                    --line2: rgba(124, 58, 237, .14);
+                }
+                body { font-family: Manrope, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+                .font-display { font-family: Oxanium, ui-sans-serif, system-ui; letter-spacing: .02em; }
+                .grid-scan {
+                    background:
+                        radial-gradient(1000px 700px at 20% 10%, rgba(16,207,192,.16), transparent 55%),
+                        radial-gradient(900px 600px at 85% 25%, rgba(124,58,237,.14), transparent 55%),
+                        linear-gradient(180deg, var(--bg0), var(--bg1));
+                }
+                .grid-scan:before {
+                    content: "";
+                    position: fixed;
+                    inset: 0;
+                    pointer-events: none;
+                    z-index: -1;
+                    background-image:
+                        linear-gradient(to right, rgba(101,247,233,.07) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(101,247,233,.06) 1px, transparent 1px);
+                    background-size: 56px 56px;
+                    mask-image: radial-gradient(1200px 700px at 40% 0%, rgba(0,0,0,.85), transparent 70%);
+                    opacity: .8;
+                }
+                .grain:after{
+                    content:"";
+                    position: fixed;
+                    inset:-40%;
+                    pointer-events:none;
+                    z-index: -1;
+                    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+                    transform: translate3d(0,0,0);
+                    opacity:.22;
+                    mix-blend-mode: overlay;
+                }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
-        {% block body %}{% endblock %}
+    <body class="relative isolate grid-scan grain min-h-screen overflow-x-hidden text-slate-100 selection:bg-cyan-300/20 selection:text-cyan-50">
+        <header class="sticky top-0 z-40 border-b border-cyan-200/10 bg-ink-950/70 backdrop-blur">
+            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+                <a href="{{ path('app_event_index') }}" class="group flex items-center gap-3">
+                    <span class="relative inline-flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-200/15 bg-ink-900/40 shadow-glow">
+                        <span class="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-300/15 to-violet-400/10"></span>
+                        <span class="relative font-display text-sm text-cyan-100">SE</span>
+                    </span>
+                    <div class="leading-tight">
+                        <div class="font-display text-sm tracking-wide text-slate-100">SecureEvents</div>
+                        <div class="text-xs text-slate-400">IT • Cybersecurity • Ops</div>
+                    </div>
+                </a>
+
+                <nav class="flex items-center gap-2 text-sm">
+                    <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_event_index') }}">Events</a>
+                    <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_reservation_index') }}">Reservations</a>
+                    <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_user_index') }}">Users</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="mx-auto w-full max-w-6xl px-4 py-10">
+            {% block body %}{% endblock %}
+        </main>
+
+        <footer class="border-t border-cyan-200/10">
+            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-slate-400">
+                <span>SecureEvents — hardened UI baseline</span>
+                <span class="font-display text-slate-500">v1</span>
+            </div>
+        </footer>
     </body>
 </html>
