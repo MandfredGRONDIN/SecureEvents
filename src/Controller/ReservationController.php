@@ -26,6 +26,9 @@ final class ReservationController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $reservation = new Reservation();
+        if ($reservation->getCreatedAt() === null) {
+            $reservation->setCreatedAt(new \DateTimeImmutable());
+        }
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
 
