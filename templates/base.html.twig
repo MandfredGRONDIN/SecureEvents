@@ -105,6 +105,14 @@
                     <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_event_index') }}">Events</a>
                     <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_reservation_index') }}">Reservations</a>
                     <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_user_index') }}">Users</a>
+                    {% if app.user %}
+                        <span class="rounded-lg border border-cyan-200/20 bg-ink-800/50 px-3 py-2 text-cyan-200/90 text-xs" title="Compte connecté">
+                            {{ app.user.firstName }} {{ app.user.lastName }} ({{ app.user.userIdentifier }})
+                        </span>
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_login') }}">Connexion</a>
+                    {% endif %}
                 </nav>
             </div>
         </header>
