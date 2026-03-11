@@ -38,8 +38,8 @@ final class ResetDatabaseAndCreateUserCommand extends Command
         $this
             ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'Email de l\'utilisateur', 'admin@admin.admin')
             ->addOption('password', null, InputOption::VALUE_OPTIONAL, 'Mot de passe en clair', 'admin')
-            ->addOption('first-name', null, InputOption::VALUE_OPTIONAL, 'Prénom', 'Admin')
-            ->addOption('last-name', null, InputOption::VALUE_OPTIONAL, 'Nom', 'SecureEvents');
+            ->addOption('first-name', null, InputOption::VALUE_OPTIONAL, 'First name', 'Admin')
+            ->addOption('last-name', null, InputOption::VALUE_OPTIONAL, 'Last name', 'SecureEvents');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
