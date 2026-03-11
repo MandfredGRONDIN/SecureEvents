@@ -22,6 +22,8 @@
                     <thead class="bg-ink-950/40">
                         <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
                             <th class="px-5 py-4">ID</th>
+                            <th class="px-5 py-4">Event</th>
+                            <th class="px-5 py-4">Participant</th>
                             <th class="px-5 py-4">Created</th>
                             <th class="px-5 py-4 text-right">Actions</th>
                         </tr>
@@ -29,8 +31,32 @@
                     <tbody class="divide-y divide-cyan-200/10">
                     {% for reservation in reservations %}
                         <tr class="hover:bg-white/3 transition">
-                            <td class="px-5 py-4 text-slate-300">{{ reservation.id }}</td>
-                            <td class="px-5 py-4 text-slate-300">{{ reservation.createdAt ? reservation.createdAt|date('Y-m-d') : '' }}</td>
+                            <td class="px-5 py-4 text-slate-300">#{{ reservation.id }}</td>
+                            <td class="px-5 py-4">
+                                {% if reservation.event %}
+                                    <div class="font-semibold text-slate-100">{{ reservation.event.title }}</div>
+                                    <div class="mt-0.5 text-xs text-slate-500">
+                                        {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '' }} · {{ reservation.event.location }}
+                                    </div>
+                                {% else %}
+                                    <span class="text-xs text-slate-500">Event missing</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-5 py-4">
+                                {% if reservation.participant %}
+                                    <div class="font-semibold text-slate-100">
+                                        {{ reservation.participant.firstName }} {{ reservation.participant.lastName }}
+                                    </div>
+                                    <div class="mt-0.5 text-xs text-slate-500">
+                                        {{ reservation.participant.email }}
+                                    </div>
+                                {% else %}
+                                    <span class="text-xs text-slate-500">User missing</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-5 py-4 text-slate-300">
+                                {{ reservation.createdAt ? reservation.createdAt|date('Y-m-d') : '' }}
+                            </td>
                             <td class="px-5 py-4">
                                 <div class="flex justify-end gap-2">
                                     <a href="{{ path('app_reservation_show', {'id': reservation.id}) }}"

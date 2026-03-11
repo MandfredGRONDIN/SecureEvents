@@ -20,17 +20,58 @@
             </div>
         </div>
 
-        <div class="rounded-2xl border border-cyan-200/10 bg-ink-900/30 p-6 shadow-glow">
-            <dl class="grid gap-5 sm:grid-cols-2">
+        <div class="rounded-2xl border border-cyan-200/10 bg-ink-900/30 p-6 shadow-glow space-y-6">
+            <dl class="grid gap-5 sm:grid-cols-3">
                 <div>
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">ID</dt>
-                    <dd class="mt-1 text-sm text-slate-100">{{ reservation.id }}</dd>
+                    <dd class="mt-1 text-sm text-slate-100">#{{ reservation.id }}</dd>
                 </div>
                 <div>
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Created</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ reservation.createdAt ? reservation.createdAt|date('Y-m-d') : '' }}</dd>
                 </div>
             </dl>
+
+            <div class="grid gap-6 lg:grid-cols-2">
+                <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
+                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Event</h2>
+                    {% if reservation.event %}
+                        <div class="text-sm text-slate-100 font-semibold">
+                            {{ reservation.event.title }}
+                        </div>
+                        <div class="mt-1 text-xs text-slate-400">
+                            {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '' }} · {{ reservation.event.location }}
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">
+                            Capacity: {{ reservation.event.maxCapacity }} ·
+                            {% if reservation.event.isPublished %}
+                                <span class="text-cyan-300">Published</span>
+                            {% else %}
+                                <span class="text-slate-400">Unpublished</span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p class="text-xs text-slate-500">Event missing.</p>
+                    {% endif %}
+                </div>
+
+                <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
+                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Participant</h2>
+                    {% if reservation.participant %}
+                        <div class="text-sm text-slate-100 font-semibold">
+                            {{ reservation.participant.firstName }} {{ reservation.participant.lastName }}
+                        </div>
+                        <div class="mt-1 text-xs text-slate-400">
+                            {{ reservation.participant.email }}
+                        </div>
+                        <div class="mt-2 text-xs text-slate-500">
+                            User ID: #{{ reservation.participant.id }}
+                        </div>
+                    {% else %}
+                        <p class="text-xs text-slate-500">User missing.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
