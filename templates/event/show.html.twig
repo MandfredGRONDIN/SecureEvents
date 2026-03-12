@@ -61,8 +61,8 @@
                     <dd class="mt-1 text-sm text-slate-100">{{ event.location }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Max capacity</dt>
-                    <dd class="mt-1 text-sm text-slate-100">{{ event.maxCapacity }}</dd>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Capacité</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ event.reservations|length }} / {{ event.maxCapacity }}</dd>
                 </div>
                 <div class="sm:col-span-2">
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Créateur</dt>
@@ -76,6 +76,24 @@
                     </dd>
                 </div>
             </dl>
+
+            {# Tous les utilisateurs qui participent à cet événement #}
+            <div class="mt-8 border-t border-cyan-200/10 pt-6">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">Participants inscrits ({{ event.reservations|length }} / {{ event.maxCapacity }})</h2>
+                <p class="text-xs text-slate-500 mb-3">Tous les utilisateurs qui vont participer à cet événement.</p>
+                {% if event.reservations|length > 0 %}
+                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {% for reservation in event.reservations %}
+                            <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4 shadow-glow">
+                                <div class="font-medium {{ app.user and reservation.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ reservation.participant.firstName }} {{ reservation.participant.lastName }}</div>
+                                <div class="mt-2 text-xs text-slate-500">Réservé le {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y') : '—' }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-sm text-slate-500">Aucun participant inscrit pour le moment.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_RESERVATION_EVENT_PARTICIPANT', columns: ['event_id', 'participant_id'])]
 class Reservation
 {
     #[ORM\Id]

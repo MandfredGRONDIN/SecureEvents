@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reservation index{% endblock %}
+{% block title %}Reservations{% endblock %}
 
 {% block body %}
     <div class="flex flex-col gap-6">
         <div class="flex items-start justify-between gap-4">
             <div>
                 <h1 class="font-display text-2xl tracking-wide text-slate-50">Reservations</h1>
-                <p class="mt-1 text-sm text-slate-400">Traçabilité des réservations et horodatage.</p>
+                <p class="mt-1 text-sm text-slate-400">Vos réservations — événements auxquels vous êtes inscrit.</p>
             </div>
             <a href="{{ path('app_reservation_new') }}"
                class="inline-flex items-center gap-2 rounded-xl bg-cyan-400/15 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/25 shadow-glow hover:bg-cyan-400/20 hover:shadow-glowStrong transition">
@@ -16,66 +16,68 @@
             </a>
         </div>
 
-        <div class="overflow-hidden rounded-2xl border border-cyan-200/10 bg-ink-900/30 shadow-glow">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-cyan-200/10 text-sm">
-                    <thead class="bg-ink-950/40">
-                        <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th class="px-5 py-4">ID</th>
-                            <th class="px-5 py-4">Event</th>
-                            <th class="px-5 py-4">Participant</th>
-                            <th class="px-5 py-4">Created</th>
-                            <th class="px-5 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-cyan-200/10">
-                    {% for reservation in reservations %}
-                        <tr class="hover:bg-white/3 transition">
-                            <td class="px-5 py-4 text-slate-300">#{{ reservation.id }}</td>
-                            <td class="px-5 py-4">
-                                {% if reservation.event %}
-                                    <div class="font-semibold text-slate-100">{{ reservation.event.title }}</div>
-                                    <div class="mt-0.5 text-xs text-slate-500">
-                                        {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '' }} · {{ reservation.event.location }}
-                                    </div>
-                                {% else %}
-                                    <span class="text-xs text-slate-500">Event missing</span>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {% for reservation in reservations %}
+                <article class="group relative overflow-hidden rounded-2xl border border-cyan-200/10 bg-ink-900/30 shadow-glow transition hover:shadow-glowStrong">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-300/10 via-transparent to-violet-400/10 opacity-70"></div>
+                    <div class="relative p-5">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <h2 class="font-display text-lg tracking-wide text-slate-50 truncate">
+                                    {% if reservation.event %}
+                                        {{ reservation.event.title }}
+                                    {% else %}
+                                        Événement supprimé
+                                    {% endif %}
+                                </h2>
+                                {% if reservation.event and reservation.event.location %}
+                                    <p class="mt-1 text-xs text-slate-400 truncate">{{ reservation.event.location }}</p>
                                 {% endif %}
-                            </td>
-                            <td class="px-5 py-4">
-                                {% if reservation.participant %}
-                                    <div class="font-semibold text-slate-100">
-                                        {{ reservation.participant.firstName }} {{ reservation.participant.lastName }}
-                                    </div>
-                                    <div class="mt-0.5 text-xs text-slate-500">
-                                        {{ reservation.participant.email }}
-                                    </div>
-                                {% else %}
-                                    <span class="text-xs text-slate-500">User missing</span>
-                                {% endif %}
-                            </td>
-                            <td class="px-5 py-4 text-slate-300">
-                                {{ reservation.createdAt ? reservation.createdAt|date('Y-m-d') : '' }}
-                            </td>
-                            <td class="px-5 py-4">
-                                <div class="flex justify-end gap-2">
-                                    <a href="{{ path('app_reservation_show', {'id': reservation.id}) }}"
-                                       class="rounded-lg px-3 py-2 text-xs font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">View</a>
-                                    <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}"
-                                       class="rounded-lg px-3 py-2 text-xs font-semibold text-cyan-100 ring-1 ring-cyan-300/20 hover:bg-cyan-400/10 transition">Edit</a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="3" class="px-5 py-10 text-center text-slate-400">
-                                No reservations found. <a class="text-cyan-200 hover:text-cyan-100 underline underline-offset-4" href="{{ path('app_reservation_new') }}">Create your first reservation</a>.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                            <div class="shrink-0">
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-400/20 px-3 py-1 text-xs font-semibold text-cyan-100 ring-1 ring-cyan-300/40">
+                                    <span class="h-2 w-2 rounded-full bg-cyan-300"></span>
+                                    <span>Réservé</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <dl class="mt-4 grid grid-cols-2 gap-3 text-xs">
+                            {% if reservation.event %}
+                            <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-3">
+                                <dt class="font-semibold uppercase tracking-wider text-slate-400">Date event</dt>
+                                <dd class="mt-1 text-slate-100">
+                                    {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '—' }}
+                                </dd>
+                            </div>
+                            <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-3">
+                                <dt class="font-semibold uppercase tracking-wider text-slate-400">Capacité</dt>
+                                <dd class="mt-1 text-slate-100">{{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }}</dd>
+                            </div>
+                            {% endif %}
+                            <div class="col-span-2 rounded-xl border border-cyan-200/10 bg-black/10 p-3">
+                                <dt class="font-semibold uppercase tracking-wider text-slate-400">Réservé le</dt>
+                                <dd class="mt-1 text-slate-100">
+                                    {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y') : '—' }}
+                                </dd>
+                            </div>
+                        </dl>
+
+                        <div class="mt-5 flex items-center justify-between gap-3">
+                            <span class="text-xs text-slate-500">#{{ reservation.id }}</span>
+                            <div class="flex gap-2">
+                                <a href="{{ path('app_reservation_show', {'id': reservation.id}) }}"
+                                   class="rounded-lg px-3 py-2 text-xs font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">Voir</a>
+                                {{ include('reservation/_delete_form.html.twig', { reservation: reservation, compact: true }) }}
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% else %}
+                <div class="sm:col-span-2 lg:col-span-3 overflow-hidden rounded-2xl border border-cyan-200/10 bg-ink-900/30 p-8 text-center text-slate-400 shadow-glow">
+                    Aucune réservation. <a class="text-cyan-200 hover:text-cyan-100 underline underline-offset-4" href="{{ path('app_reservation_new') }}">Créer une réservation</a>.
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

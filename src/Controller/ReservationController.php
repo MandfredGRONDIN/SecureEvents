@@ -35,9 +35,10 @@ final class ReservationController extends AbstractController
 
     /**
      * Création d'une réservation (le participant est l'utilisateur connecté).
+     * Un même utilisateur ne peut réserver qu'une fois par événement ; la capacité max est vérifiée.
      */
     #[Route('/new', name: 'app_reservation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -53,9 +54,24 @@ final class ReservationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $event = $reservation->getEvent();
+            if ($event === null) {
+                $this->addFlash('error', 'Veuillez sélectionner un événement.');
+                return $this->render('reservation/new.html.twig', ['reservation' => $reservation, 'form' => $form]);
+            }
+            $existing = $reservationRepository->findOneByEventAndParticipant($event, $user);
+            if ($existing !== null) {
+                $this->addFlash('error', 'Vous avez déjà une réservation pour cet événement.');
+                return $this->render('reservation/new.html.twig', ['reservation' => $reservation, 'form' => $form]);
+            }
+            if ($event->getReservations()->count() >= $event->getMaxCapacity()) {
+                $this->addFlash('error', 'Cet événement est complet.');
+                return $this->render('reservation/new.html.twig', ['reservation' => $reservation, 'form' => $form]);
+            }
             $entityManager->persist($reservation);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Réservation enregistrée.');
             return $this->redirectToRoute('app_reservation_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -79,29 +95,8 @@ final class ReservationController extends AbstractController
     }
 
     /**
-     * Édition d'une réservation (réservé au participant).
-     */
-    #[Route('/{id}/edit', name: 'app_reservation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
-    {
-        $this->denyAccessUnlessReservationOwner($reservation);
-        $form = $this->createForm(ReservationType::class, $reservation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_reservation_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('reservation/edit.html.twig', [
-            'reservation' => $reservation,
-            'form' => $form,
-        ]);
-    }
-
-    /**
      * Suppression d'une réservation (réservé au participant).
+     * Les réservations ne sont pas modifiables, uniquement supprimables.
      */
     #[Route('/{id}', name: 'app_reservation_delete', methods: ['POST'])]
     public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response

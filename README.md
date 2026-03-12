@@ -29,7 +29,7 @@ Toutes les commandes ci-dessous se lancent depuis le répertoire du projet Symfo
 | `make cache-clear` | Vide le cache Symfony |
 | `make console CMD="..."` | Lance une commande Symfony (ex. `make console CMD="list"` ou `make console CMD="doctrine:migrations:status"`) |
 | `make db-reset` | Réinitialise la BDD (drop, create, migrate) et crée un utilisateur admin (options : `EMAIL=`, `PASSWORD=`, `FIRST=`, `LAST=`) |
-| `make seed-events` | Crée des événements de test (options : `COUNT=40`, `WITH_ANONYMOUS=1`) |
+| `make seed-events` | Crée des événements de test (option : `COUNT=40`) |
 | `make seed-demo` | Crée des utilisateurs de démo (1 admin + 5 users, droits différents) et des événements cohérents (certains users n'ont créé aucun event) ; options : `EVENTS=30`, `force=1` |
 | `make logs` | Affiche les logs du service app en continu |
 | `make shell` | Ouvre un shell dans le conteneur de l’application |

@@ -35,10 +35,10 @@ class Event
     private ?bool $isPublished = null;
 
     /**
-     * Créateur de l'événement (null pour les événements créés avant l'ajout de cette relation).
+     * Créateur de l'événement. Tout événement doit avoir un créateur.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private ?User $createdBy = null;
 
     /**

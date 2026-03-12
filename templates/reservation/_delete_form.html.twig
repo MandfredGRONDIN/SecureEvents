@@ -1,6 +1,6 @@
-<form method="post" action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" class="inline">
+<form method="post" action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" onsubmit="return confirm('Supprimer cette réservation ?');" class="inline">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
-    <button class="inline-flex items-center justify-center rounded-xl bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-100 ring-1 ring-rose-300/20 hover:bg-rose-500/15 transition">
-        Delete
+    <button type="submit" class="{{ compact|default(false) ? 'rounded-lg px-3 py-2 text-xs font-semibold text-rose-100 ring-1 ring-rose-300/20 hover:bg-rose-500/15 transition' : 'inline-flex items-center justify-center rounded-xl bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-100 ring-1 ring-rose-300/20 hover:bg-rose-500/15 transition' }}">
+        Supprimer
     </button>
 </form>

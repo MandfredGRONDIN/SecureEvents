@@ -3,7 +3,10 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    # cookie_samesite: lax et cookie_secure: false évitent les erreurs CSRF (cookie bien renvoyé en dev / Docker)
+    session:
+        cookie_samesite: lax
+        cookie_secure: false
 
     #esi: true
     #fragments: true

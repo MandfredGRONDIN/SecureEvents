@@ -26,7 +26,7 @@ help:
 	@echo "  make shell       - Ouvrir un shell dans le conteneur app"
 	@echo "  make test        - Lancer les tests PHPUnit"
 	@echo "  make db-reset    - Réinitialiser la BDD (drop, create, migrate) et créer un utilisateur"
-	@echo "  make seed-events - Créer des événements de test (option : COUNT=40, WITH_ANONYMOUS=1)"
+	@echo "  make seed-events - Créer des événements de test (option : COUNT=40)"
 	@echo "  make seed-demo   - Créer utilisateurs de démo (rôles différents) + événements cohérents"
 	@echo ""
 
@@ -88,9 +88,9 @@ test:
 	$(EXEC_APP) php bin/phpunit
 
 # Créer des événements de test pour la visibilité (anonyme / user / admin)
-# Options : make seed-events COUNT=50  ou  make seed-events WITH_ANONYMOUS=1
+# Options : make seed-events COUNT=50
 seed-events:
-	$(EXEC_APP) php bin/console app:events:seed --count="$(or $(COUNT),25)" $(if $(WITH_ANONYMOUS),--with-anonymous,)
+	$(EXEC_APP) php bin/console app:events:seed --count="$(or $(COUNT),25)"
 
 # Créer utilisateurs de démo (1 admin + 5 users) et événements avec répartition réaliste (certains users sans event)
 # Options : make seed-demo EVENTS=30  ou  make seed-demo force=1

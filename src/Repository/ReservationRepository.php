@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Event;
 use App\Entity\Reservation;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -32,6 +33,20 @@ class ReservationRepository extends ServiceEntityRepository
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Retourne la réservation d'un participant pour un événement donné, ou null.
+     */
+    public function findOneByEventAndParticipant(Event $event, User $participant): ?Reservation
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.Event = :event')
+            ->andWhere('r.participant = :participant')
+            ->setParameter('event', $event)
+            ->setParameter('participant', $participant)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     //    /**

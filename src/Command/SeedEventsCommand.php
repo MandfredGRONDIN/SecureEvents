@@ -79,15 +79,13 @@ final class SeedEventsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('count', 'c', InputOption::VALUE_OPTIONAL, 'Nombre d\'événements à créer', 25)
-            ->addOption('with-anonymous', null, InputOption::VALUE_NONE, 'Créer aussi des événements sans créateur (createdBy = null)');
+            ->addOption('count', 'c', InputOption::VALUE_OPTIONAL, 'Nombre d\'événements à créer', 25);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $count = (int) $input->getOption('count');
-        $withAnonymous = $input->getOption('with-anonymous');
 
         $io->title('Création d\'événements de test');
 
@@ -114,12 +112,8 @@ final class SeedEventsCommand extends Command
             // Répartition : ~60 % publiés, ~40 % non publiés
             $event->setIsPublished($i % 5 !== 2 && $i % 5 !== 3);
 
-            // Créateur : répartir entre utilisateurs et éventuellement null
-            if ($withAnonymous && $i % 4 === 0) {
-                $event->setCreatedBy(null);
-            } else {
-                $event->setCreatedBy($users[$i % \count($users)]);
-            }
+            // Tout événement a un créateur (obligatoire)
+            $event->setCreatedBy($users[$i % \count($users)]);
 
             $this->entityManager->persist($event);
             $created++;

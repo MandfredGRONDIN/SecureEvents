@@ -26,18 +26,17 @@ final class EventController extends AbstractController
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $event = new Event();
         $user = $this->getUser();
-        if ($user !== null) {
-            $event->setCreatedBy($user);
+        if ($user === null) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour créer un événement.');
         }
+
+        $event = new Event();
+        $event->setCreatedBy($user);
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($event->getCreatedBy() === null && $user !== null) {
-                $event->setCreatedBy($user);
-            }
             $entityManager->persist($event);
             $entityManager->flush();
 

@@ -11,10 +11,7 @@
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ path('app_reservation_index') }}" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">
-                    Back
-                </a>
-                <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" class="inline-flex items-center justify-center rounded-xl bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/20 hover:bg-cyan-400/15 transition">
-                    Edit
+                    Retour
                 </a>
                 {{ include('reservation/_delete_form.html.twig') }}
             </div>
@@ -43,7 +40,7 @@
                             {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '' }} · {{ reservation.event.location }}
                         </div>
                         <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                            <span>Capacity: {{ reservation.event.maxCapacity }}</span>
+                            <span>Capacité : {{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }}</span>
                             {% if reservation.event.isPublished %}
                                 <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-1 font-semibold text-emerald-200 ring-1 ring-emerald-300/40">
                                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>
@@ -62,22 +59,35 @@
                 </div>
 
                 <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
-                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Participant</h2>
-                    {% if reservation.participant %}
+                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Créateur de l'événement</h2>
+                    {% if reservation.event and reservation.event.createdBy %}
                         <div class="text-sm text-slate-100 font-semibold">
-                            {{ reservation.participant.firstName }} {{ reservation.participant.lastName }}
+                            {{ reservation.event.createdBy.firstName }} {{ reservation.event.createdBy.lastName }}
                         </div>
                         <div class="mt-1 text-xs text-slate-400">
-                            {{ reservation.participant.email }}
-                        </div>
-                        <div class="mt-2 text-xs text-slate-500">
-                            User ID: #{{ reservation.participant.id }}
+                            {{ reservation.event.createdBy.email }}
                         </div>
                     {% else %}
-                        <p class="text-xs text-slate-500">User missing.</p>
+                        <p class="text-sm text-slate-500">Non renseigné</p>
                     {% endif %}
                 </div>
             </div>
+
+            {# Liste de tous les participants inscrits à cet événement #}
+            {% if reservation.event and reservation.event.reservations|length > 0 %}
+                <div class="border-t border-cyan-200/10 pt-6">
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2">Tous les participants ({{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }})</h2>
+                    <p class="text-xs text-slate-500 mb-3">Utilisateurs inscrits à cet événement.</p>
+                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {% for resa in reservation.event.reservations %}
+                            <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
+                                <div class="font-medium {{ app.user and resa.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ resa.participant.firstName }} {{ resa.participant.lastName }}</div>
+                                <div class="mt-2 text-xs text-slate-500">Réservé le {{ resa.createdAt ? resa.createdAt|date('d/m/Y') : '—' }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
