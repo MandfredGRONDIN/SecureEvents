@@ -19,6 +19,8 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            # Redirige les utilisateurs non connectés vers la page événements au lieu du login
+            entry_point: App\Security\RedirectToEventEntryPoint
 
             form_login:
                 login_path: app_login
