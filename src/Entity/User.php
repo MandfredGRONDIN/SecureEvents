@@ -52,9 +52,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'participant')]
     private Collection $reservations;
 
+    /**
+     * Événements créés par cet utilisateur.
+     *
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'createdBy')]
+    private Collection $createdEvents;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->createdEvents = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -190,6 +199,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->reservations->removeElement($reservation)) {
             if ($reservation->getParticipant() === $this) {
                 $reservation->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getCreatedEvents(): Collection
+    {
+        return $this->createdEvents;
+    }
+
+    public function addCreatedEvent(Event $createdEvent): static
+    {
+        if (!$this->createdEvents->contains($createdEvent)) {
+            $this->createdEvents->add($createdEvent);
+            $createdEvent->setCreatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedEvent(Event $createdEvent): static
+    {
+        if ($this->createdEvents->removeElement($createdEvent)) {
+            if ($createdEvent->getCreatedBy() === $this) {
+                $createdEvent->setCreatedBy(null);
             }
         }
 

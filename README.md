@@ -1,6 +1,6 @@
 # SecureEvents
 
-Projet de classe — application Symfony dockerisée.
+Projet de classe — application Symfony dockerisée. Gestion d'événements avec visibilité et droits selon le rôle (anonyme, utilisateur connecté, administrateur).
 
 ---
 
@@ -28,6 +28,8 @@ Toutes les commandes ci-dessous se lancent depuis le répertoire du projet Symfo
 | `make schema-update` | Met à jour le schéma de la base à partir des entités (sans utiliser les migrations) |
 | `make cache-clear` | Vide le cache Symfony |
 | `make console CMD="..."` | Lance une commande Symfony (ex. `make console CMD="list"` ou `make console CMD="doctrine:migrations:status"`) |
+| `make db-reset` | Réinitialise la BDD (drop, create, migrate) et crée un utilisateur admin (options : `EMAIL=`, `PASSWORD=`, `FIRST=`, `LAST=`) |
+| `make seed-events` | Crée des événements de test (options : `COUNT=40`, `WITH_ANONYMOUS=1` pour des événements sans créateur) |
 | `make logs` | Affiche les logs du service app en continu |
 | `make shell` | Ouvre un shell dans le conteneur de l’application |
 | `make test` | Lance les tests PHPUnit |
@@ -50,6 +52,18 @@ make down
 
 L’application est accessible sur **http://localhost:8000**.
 
+Pour réinitialiser la base et créer un admin, puis peupler avec des événements de test : `make db-reset` puis `make seed-events COUNT=25`.
+
+---
+
+## Sécurité et visibilité des événements
+
+- **Non connecté** : voit uniquement les événements **publiés** ; ne peut pas créer ni éditer d'événements (boutons masqués, accès aux URLs redirigé vers le login).
+- **Utilisateur connecté (non admin)** : voit les événements **publiés** et les événements **qu'il a créés** (publiés ou non) ; peut créer des événements ; peut éditer/supprimer **uniquement** ceux dont il est le créateur.
+- **Administrateur** : voit **tous** les événements ; peut créer, éditer et supprimer n'importe quel événement.
+
+Chaque événement affiche son **créateur** (prénom, nom, email) sur la liste et sur la page détail. La création et l'édition sont protégées par `security.yaml` (ROLE_USER) et par le `EventVoter` (droits EVENT_VIEW, EVENT_EDIT, EVENT_DELETE).
+
 ---
 
 ## Gestion des entités et migrations
@@ -62,7 +76,7 @@ Les entités sont créées avec le composant Maker. Depuis le répertoire du pro
 # Entité User (email, password, roles, firstName, lastName, createdAt)
 make console CMD="make:entity User"
 
-# Entité Event (title, description, startDate, location, maxCapacity, isPublished)
+# Entité Event (title, description, startDate, location, maxCapacity, isPublished, createdBy → User)
 make console CMD="make:entity Event"
 
 # Entité Reservation (participant → User, event → Event, createdAt)

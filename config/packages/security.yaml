@@ -41,6 +41,10 @@ security:
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/user/login, roles: PUBLIC_ACCESS }
         - { path: ^/user/logout, roles: PUBLIC_ACCESS }
+        # Création et édition d'événements : réservées aux utilisateurs connectés
+        - { path: ^/event/new, roles: ROLE_USER }
+        - { path: ^/event/.+/edit, roles: ROLE_USER }
+        # Liste et détail des événements : public
         - { path: ^/event, roles: PUBLIC_ACCESS }
         # Réservations : réservé aux utilisateurs connectés
         - { path: ^/reservation, roles: ROLE_USER }
