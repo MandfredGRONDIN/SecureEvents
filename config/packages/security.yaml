@@ -33,10 +33,17 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
-    # Note: Only the *first* matching rule is applied
+    # L'ordre compte : la première règle qui correspond est appliquée
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # Pages publiques (non connecté)
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/user/login, roles: PUBLIC_ACCESS }
+        - { path: ^/user/logout, roles: PUBLIC_ACCESS }
+        - { path: ^/event, roles: PUBLIC_ACCESS }
+        # Réservations : réservé aux utilisateurs connectés
+        - { path: ^/reservation, roles: ROLE_USER }
+        # Liste des utilisateurs : réservé aux administrateurs
+        - { path: ^/user, roles: ROLE_ADMIN }
 
 when@test:
     security:

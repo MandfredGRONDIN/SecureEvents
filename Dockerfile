@@ -1,5 +1,5 @@
-# Image de base PHP 8.3 pour Symfony (alignée sur composer.lock et dépendances dev)
-FROM php:8.3-cli-bookworm
+# Image de base PHP 8.4 pour Symfony 8
+FROM php:8.4-cli-bookworm
 
 # Arguments pour personnaliser l'utilisateur (permissions sur les fichiers montés)
 # On utilise "appuser" car "www-data" existe déjà dans l'image PHP
@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Extensions PHP requises par Symfony 7
+# Extensions PHP requises par Symfony 8
 RUN docker-php-ext-install \
     pdo \
     pdo_pgsql \

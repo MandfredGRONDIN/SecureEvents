@@ -1,7 +1,7 @@
 # Makefile pour le projet Symfony SecureEvents (Docker)
 # Usage : make [cible] ou make help
 
-.PHONY: help up down build rebuild install migrate schema-update cache-clear console logs shell test db-reset
+.PHONY: help up down build rebuild install update migrate schema-update cache-clear console logs shell test db-reset
 
 # Commande Docker Compose (depuis ce répertoire)
 DOCKER_COMPOSE = docker compose
@@ -16,6 +16,7 @@ help:
 	@echo "  make build       - Construire l'image de l'app"
 	@echo "  make rebuild     - Reconstruire sans cache et redémarrer"
 	@echo "  make install     - composer install dans le conteneur"
+	@echo "  make update      - composer update (mise à jour des dépendances)"
 	@echo "  make migration-generate - Générer une migration (diff entités / base)"
 	@echo "  make migrate     - Exécuter les migrations Doctrine"
 	@echo "  make schema-update - Mettre à jour le schéma DB depuis les entités"
@@ -47,6 +48,10 @@ rebuild:
 # Installer les dépendances Composer
 install:
 	$(EXEC_APP) composer install
+
+# Mettre à jour les dépendances Composer (après modification du composer.json)
+update:
+	$(EXEC_APP) composer update
 
 # Générer une migration à partir des entités (diff avec la base)
 migration-generate:
