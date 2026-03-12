@@ -122,6 +122,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here.
+        // This app does not keep extra sensitive fields on the User entity.
+    }
+
     public function getFirstName(): ?string
     {
         return $this->firstName;
