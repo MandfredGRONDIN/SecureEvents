@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,38 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-    //    /**
-    //     * @return Event[] Returns an array of Event objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Retourne les événements visibles pour l'utilisateur selon son statut :
+     * - Non connecté : uniquement les événements publiés
+     * - Connecté (non admin) : publiés + ceux qu'il a créés (même non publiés)
+     * - Admin : tous les événements
+     *
+     * @return Event[]
+     */
+    public function findVisibleForUser(?User $user): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->orderBy('e.startDate', 'ASC');
 
-    //    public function findOneBySomeField($value): ?Event
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($user === null) {
+            $qb->andWhere('e.isPublished = :published')
+                ->setParameter('published', true);
+            return $qb->getQuery()->getResult();
+        }
+
+        if ($this->isAdmin($user)) {
+            return $qb->getQuery()->getResult();
+        }
+
+        $qb->andWhere('e.isPublished = :published OR e.createdBy = :user')
+            ->setParameter('published', true)
+            ->setParameter('user', $user);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    private function isAdmin(User $user): bool
+    {
+        return \in_array('ROLE_ADMIN', $user->getRoles(), true);
+    }
 }
