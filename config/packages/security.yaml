@@ -45,6 +45,8 @@ security:
         # Création et édition d'événements : réservées aux utilisateurs connectés
         - { path: ^/event/new, roles: ROLE_USER }
         - { path: ^/event/.+/edit, roles: ROLE_USER }
+        # API REST : lecture du catalogue d'événements (partenaires, applications mobiles)
+        - { path: ^/api/events, roles: PUBLIC_ACCESS }
         # Liste et détail des événements : public
         - { path: ^/event, roles: PUBLIC_ACCESS }
         # Réservations : réservé aux utilisateurs connectés

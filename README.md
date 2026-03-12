@@ -67,6 +67,29 @@ Chaque événement affiche son **créateur** (prénom, nom, email) sur la liste 
 
 ---
 
+## API REST
+
+L’application expose une API REST pour permettre à des partenaires ou applications mobiles de consulter le catalogue d’événements.
+
+### Endpoint : liste des événements
+
+| Méthode | URL | Description |
+|--------|-----|-------------|
+| `GET` | `/api/events` | Liste des événements **futurs** et **publiés** au format JSON |
+
+- **Accès** : public (aucune authentification requise).
+- **Format de réponse** : JSON (composant Serializer Symfony).
+
+Chaque élément du tableau contient notamment : `id`, `title`, `description`, `startDate`, `location`, `maxCapacity`, `isPublished`, `placesDisponibles` (places restantes).
+
+**Exemple d’appel :**
+
+```bash
+curl -s http://localhost:8000/api/events
+```
+
+---
+
 ## Gestion des entités et migrations
 
 ### 1. Créer les entités

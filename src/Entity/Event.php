@@ -7,31 +7,40 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
+    /** @var int|null Identifiant de l'événement */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['api:event:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['api:event:list'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['api:event:list'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['api:event:list'])]
     private ?\DateTimeImmutable $startDate = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['api:event:list'])]
     private ?string $location = null;
 
     #[ORM\Column]
+    #[Groups(['api:event:list'])]
     private ?int $maxCapacity = null;
 
     #[ORM\Column]
+    #[Groups(['api:event:list'])]
     private ?bool $isPublished = null;
 
     /**
@@ -120,6 +129,15 @@ class Event
     public function isPublished(): ?bool
     {
         return $this->isPublished;
+    }
+
+    /**
+     * Nombre de places encore disponibles (exposé par l'API).
+     */
+    #[Groups(['api:event:list'])]
+    public function getPlacesDisponibles(): int
+    {
+        return max(0, $this->maxCapacity - $this->reservations->count());
     }
 
     public function setIsPublished(bool $isPublished): static

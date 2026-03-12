@@ -47,6 +47,26 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Retourne les événements publiés dont la date de début est aujourd'hui ou dans le futur.
+     * Utilisé par l'API GET /api/events (liste pour partenaires / applications mobiles).
+     *
+     * @return Event[]
+     */
+    public function findFuturePublished(): array
+    {
+        $today = new \DateTimeImmutable('today');
+
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.isPublished = :published')
+            ->andWhere('e.startDate >= :today')
+            ->setParameter('published', true)
+            ->setParameter('today', $today)
+            ->orderBy('e.startDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     private function isAdmin(User $user): bool
     {
         return \in_array('ROLE_ADMIN', $user->getRoles(), true);
