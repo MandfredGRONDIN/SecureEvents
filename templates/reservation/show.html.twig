@@ -42,12 +42,18 @@
                         <div class="mt-1 text-xs text-slate-400">
                             {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '' }} · {{ reservation.event.location }}
                         </div>
-                        <div class="mt-2 text-xs text-slate-500">
-                            Capacity: {{ reservation.event.maxCapacity }} ·
+                        <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                            <span>Capacity: {{ reservation.event.maxCapacity }}</span>
                             {% if reservation.event.isPublished %}
-                                <span class="text-cyan-300">Published</span>
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-1 font-semibold text-emerald-200 ring-1 ring-emerald-300/40">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>
+                                    <span>Published</span>
+                                </span>
                             {% else %}
-                                <span class="text-slate-400">Unpublished</span>
+                                <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800/80 px-2.5 py-1 font-semibold text-slate-200 ring-1 ring-slate-500/50">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span>
+                                    <span>Unpublished</span>
+                                </span>
                             {% endif %}
                         </div>
                     {% else %}

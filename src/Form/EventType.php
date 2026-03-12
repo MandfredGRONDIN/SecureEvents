@@ -19,7 +19,13 @@ class EventType extends AbstractType
             ])
             ->add('location')
             ->add('maxCapacity')
-            ->add('isPublished')
+            ->add('isPublished', null, [
+                'required' => false,
+                'row_attr' => ['class' => 'is-published-row'],
+                'attr' => ['class' => 'is-published-toggle'],
+                'label' => 'Published',
+                'label_attr' => ['class' => 'is-published-label'],
+            ])
         ;
     }
 

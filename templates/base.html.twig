@@ -80,6 +80,63 @@
                     opacity:.22;
                     mix-blend-mode: overlay;
                 }
+                /* Improve visibility of native date pickers on dark background */
+                input[type="date"] {
+                    background-color: #020617;
+                    color: #f9fafb;
+                }
+                input[type="date"]::-webkit-calendar-picker-indicator {
+                    filter: invert(1);
+                }
+                /* Big, visible toggle for Event "isPublished" */
+                .is-published-row {
+                    margin-top: 1.25rem;
+                    position: relative;
+                }
+                .is-published-switch {
+                    position: absolute;
+                    inset: 0;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+                .is-published-segment {
+                    position: relative;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    border-radius: 999px;
+                    border: 1px solid rgba(148, 163, 184, 0.6);
+                    background: rgba(15, 23, 42, 0.95);
+                    overflow: hidden;
+                    font-size: 0.8rem;
+                }
+                .is-published-segment .seg {
+                    padding: 0.55rem 0.9rem;
+                    text-align: center;
+                    cursor: pointer;
+                    user-select: none;
+                    color: #94a3b8;
+                }
+                .is-published-segment .seg-on {
+                    border-right: 1px solid rgba(30, 64, 175, 0.5);
+                }
+                .is-published-switch:checked + .is-published-segment .seg-on {
+                    background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.32), transparent 55%);
+                    color: #e0f2fe;
+                    font-weight: 600;
+                }
+                .is-published-switch:checked + .is-published-segment .seg-off {
+                    background: transparent;
+                    color: #64748b;
+                }
+                .is-published-switch:not(:checked) + .is-published-segment .seg-off {
+                    background: radial-gradient(circle at 100% 0%, rgba(30, 64, 175, 0.28), transparent 55%);
+                    color: #e5e7eb;
+                    font-weight: 600;
+                }
+                .is-published-switch:not(:checked) + .is-published-segment .seg-on {
+                    background: transparent;
+                    color: #64748b;
+                }
             </style>
         {% endblock %}
 

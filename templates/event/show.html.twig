@@ -30,9 +30,15 @@
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Published</dt>
                     <dd class="mt-1">
                         {% if event.isPublished %}
-                            <span class="inline-flex items-center rounded-full bg-cyan-300/10 px-2.5 py-1 text-xs font-semibold text-cyan-100 ring-1 ring-cyan-300/20">Yes</span>
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/20 px-3 py-1 text-xs font-semibold text-emerald-100 ring-1 ring-emerald-300/40 shadow-glowStrong">
+                                <span class="h-2 w-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                                <span>Yes</span>
+                            </span>
                         {% else %}
-                            <span class="inline-flex items-center rounded-full bg-slate-500/10 px-2.5 py-1 text-xs font-semibold text-slate-300 ring-1 ring-white/10">No</span>
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800/80 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-slate-500/50">
+                                <span class="h-2 w-2 rounded-full bg-slate-500"></span>
+                                <span>No</span>
+                            </span>
                         {% endif %}
                     </dd>
                 </div>
