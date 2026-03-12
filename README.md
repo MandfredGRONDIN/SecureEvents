@@ -29,7 +29,8 @@ Toutes les commandes ci-dessous se lancent depuis le répertoire du projet Symfo
 | `make cache-clear` | Vide le cache Symfony |
 | `make console CMD="..."` | Lance une commande Symfony (ex. `make console CMD="list"` ou `make console CMD="doctrine:migrations:status"`) |
 | `make db-reset` | Réinitialise la BDD (drop, create, migrate) et crée un utilisateur admin (options : `EMAIL=`, `PASSWORD=`, `FIRST=`, `LAST=`) |
-| `make seed-events` | Crée des événements de test (options : `COUNT=40`, `WITH_ANONYMOUS=1` pour des événements sans créateur) |
+| `make seed-events` | Crée des événements de test (options : `COUNT=40`, `WITH_ANONYMOUS=1`) |
+| `make seed-demo` | Crée des utilisateurs de démo (1 admin + 5 users, droits différents) et des événements cohérents (certains users n'ont créé aucun event) ; options : `EVENTS=30`, `force=1` |
 | `make logs` | Affiche les logs du service app en continu |
 | `make shell` | Ouvre un shell dans le conteneur de l’application |
 | `make test` | Lance les tests PHPUnit |
@@ -52,7 +53,7 @@ make down
 
 L’application est accessible sur **http://localhost:8000**.
 
-Pour réinitialiser la base et créer un admin, puis peupler avec des événements de test : `make db-reset` puis `make seed-events COUNT=25`.
+Pour réinitialiser la base puis créer plusieurs utilisateurs (rôles différents) et des événements cohérents : `make db-reset` puis `make seed-demo`. Pour uniquement des événements (en gardant les users existants) : `make seed-events COUNT=25`.
 
 ---
 

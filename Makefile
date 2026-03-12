@@ -1,7 +1,7 @@
 # Makefile pour le projet Symfony SecureEvents (Docker)
 # Usage : make [cible] ou make help
 
-.PHONY: help up down build rebuild install update migrate schema-update cache-clear console logs shell test db-reset seed-events
+.PHONY: help up down build rebuild install update migrate schema-update cache-clear console logs shell test db-reset seed-events seed-demo
 
 # Commande Docker Compose (depuis ce répertoire)
 DOCKER_COMPOSE = docker compose
@@ -26,7 +26,8 @@ help:
 	@echo "  make shell       - Ouvrir un shell dans le conteneur app"
 	@echo "  make test        - Lancer les tests PHPUnit"
 	@echo "  make db-reset    - Réinitialiser la BDD (drop, create, migrate) et créer un utilisateur"
-	@echo "  make seed-events - Créer des événements de test (option : COUNT=40, --with-anonymous)"
+	@echo "  make seed-events - Créer des événements de test (option : COUNT=40, WITH_ANONYMOUS=1)"
+	@echo "  make seed-demo   - Créer utilisateurs de démo (rôles différents) + événements cohérents"
 	@echo ""
 
 # Démarrer les conteneurs en arrière-plan
@@ -87,9 +88,14 @@ test:
 	$(EXEC_APP) php bin/phpunit
 
 # Créer des événements de test pour la visibilité (anonyme / user / admin)
-# Options : make seed-events COUNT=50  ou  make seed-events COUNT=30 --with-anonymous
+# Options : make seed-events COUNT=50  ou  make seed-events WITH_ANONYMOUS=1
 seed-events:
 	$(EXEC_APP) php bin/console app:events:seed --count="$(or $(COUNT),25)" $(if $(WITH_ANONYMOUS),--with-anonymous,)
+
+# Créer utilisateurs de démo (1 admin + 5 users) et événements avec répartition réaliste (certains users sans event)
+# Options : make seed-demo EVENTS=30  ou  make seed-demo force=1
+seed-demo:
+	$(EXEC_APP) php bin/console app:seed:demo --events="$(or $(EVENTS),25)" $(if $(force),--force,)
 
 # Réinitialiser la BDD et créer un utilisateur (admin@secureevents.local / admin par défaut)
 # Options : make db-reset EMAIL=... PASSWORD=... FIRST=... LAST=...
