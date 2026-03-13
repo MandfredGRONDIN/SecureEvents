@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Event;
 use App\Entity\Reservation;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use App\Repository\EventRepository;
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,6 +21,7 @@ final class EventService
     public function __construct(
         private readonly EventRepository $eventRepository,
         private readonly ReservationRepository $reservationRepository,
+        private readonly CategoryRepository $categoryRepository,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -36,9 +38,11 @@ final class EventService
         $result = $this->eventRepository->findVisibleForUserWithFiltersPaginated($user, $filters, $page, $perPage);
         $total = $result['total'];
         $totalPages = $total > 0 ? (int) ceil($total / $perPage) : 1;
+        $categories = $this->categoryRepository->findAllOrderedByName();
 
         return [
             'events' => $result['events'],
+            'categories' => $categories,
             'total' => $total,
             'total_pages' => $totalPages,
         ];

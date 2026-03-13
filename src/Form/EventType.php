@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Event;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +29,13 @@ class EventType extends AbstractType
             ])
             ->add('location', null, [
                 'label' => 'form.event.location',
+            ])
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'name',
+                'label' => 'form.event.category',
+                'required' => false,
+                'placeholder' => 'form.event.category_placeholder',
             ])
             ->add('maxCapacity', IntegerType::class, [
                 'label' => 'form.event.max_capacity',

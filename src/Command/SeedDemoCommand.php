@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Category;
 use App\Entity\Event;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -65,9 +67,22 @@ final class SeedDemoCommand extends Command
         0, 1, 1, 2, 0, 1, 2, 3, 0, 0, 1, 2, 0, 3, 1, 5, 0, 2, 0, 1, 0, 3, 2, 1, 0,
     ];
 
+    /** Noms des catégories à créer si aucune n'existe (seed). */
+    private const CATEGORY_NAMES = [
+        'Conférence',
+        'Workshop',
+        'Meetup',
+        'Formation',
+        'Hackathon',
+        'Networking',
+        'Webinaire',
+        'Team building',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
+        private readonly CategoryRepository $categoryRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
         parent::__construct();
@@ -109,7 +124,10 @@ final class SeedDemoCommand extends Command
         }
         $this->entityManager->flush();
 
-        // 2. Créer les événements avec la répartition des créateurs
+        // 2. S'assurer que des catégories existent (création si vide)
+        $categories = $this->getOrCreateSeedCategories();
+
+        // 3. Créer les événements avec la répartition des créateurs et des catégories
         $baseDistribution = self::CREATOR_DISTRIBUTION;
         $distribution = [];
         for ($i = 0; $i < $eventCount; $i++) {
@@ -133,13 +151,18 @@ final class SeedDemoCommand extends Command
             $creatorIndex = $distribution[$i];
             $event->setCreatedBy($users[$creatorIndex] ?? $users[0]);
 
+            // Associer une catégorie (environ 85 % des événements)
+            if ($categories !== [] && $i % 7 !== 5) {
+                $event->setCategory($categories[$i % \count($categories)]);
+            }
+
             $this->entityManager->persist($event);
         }
         $this->entityManager->flush();
 
         $io->success([
             sprintf('%d utilisateur(s) de démo prêts.', \count($users)),
-            sprintf('%d événement(s) créés avec répartition réaliste des créateurs.', $eventCount),
+            sprintf('%d événement(s) créés avec répartition réaliste des créateurs et catégories.', $eventCount),
             'Certains utilisateurs n\'ont créé aucun événement (ex: Pierre Leroy, Lucie Petit selon la répartition).',
         ]);
         $io->table(
@@ -155,5 +178,26 @@ final class SeedDemoCommand extends Command
         );
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Retourne les catégories existantes, ou les crée à partir de CATEGORY_NAMES si aucune n'existe.
+     *
+     * @return list<Category>
+     */
+    private function getOrCreateSeedCategories(): array
+    {
+        $existing = $this->categoryRepository->findAllOrderedByName();
+        if ($existing !== []) {
+            return $existing;
+        }
+        foreach (self::CATEGORY_NAMES as $name) {
+            $category = new Category();
+            $category->setName($name);
+            $category->computeSlug();
+            $this->entityManager->persist($category);
+        }
+        $this->entityManager->flush();
+        return $this->categoryRepository->findAllOrderedByName();
     }
 }

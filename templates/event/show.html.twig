@@ -70,6 +70,12 @@
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.location'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ event.location }}</dd>
                 </div>
+                {% if event.category %}
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.category'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ event.category.name }}</dd>
+                </div>
+                {% endif %}
                 <div>
                     <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.capacity'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ event.reservations|length }} / {{ event.maxCapacity }}</dd>

@@ -35,6 +35,7 @@ final class EventController extends AbstractController
             'to_date' => $request->query->getString('to_date'),
             'location' => $request->query->getString('location'),
             'published' => $request->query->getString('published'),
+            'category' => $request->query->getString('category'),
         ];
         $page = max(1, (int) $request->query->get('page', 1));
 
@@ -42,6 +43,7 @@ final class EventController extends AbstractController
 
         return $this->render('event/index.html.twig', [
             'events' => $data['events'],
+            'categories' => $data['categories'],
             'filters' => $filters,
             'current_page' => $page,
             'total_pages' => $data['total_pages'],

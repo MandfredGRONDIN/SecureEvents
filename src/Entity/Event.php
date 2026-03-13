@@ -48,6 +48,14 @@ class Event
     private ?bool $isPublished = null;
 
     /**
+     * Catégorie de l'événement (optionnelle).
+     */
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['api:event:list'])]
+    private ?Category $category = null;
+
+    /**
      * Créateur de l'événement. Nullable si le créateur a supprimé son compte.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -177,6 +185,17 @@ class Event
     {
         $this->createdBy = $createdBy;
 
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
         return $this;
     }
 

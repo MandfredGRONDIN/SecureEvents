@@ -1,0 +1,7 @@
+<form method="post" action="{{ path('app_admin_category_delete', { id: category.id }) }}"
+      onsubmit="return confirm('{{ 'app.category.delete_confirm'|trans|e('js') }}');" class="inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('category_delete_' ~ category.id) }}">
+    <button type="submit" class="rounded-lg px-3 py-2 text-xs font-semibold text-rose-100 ring-1 ring-rose-300/20 hover:bg-rose-500/10 transition">
+        {{ 'app.event.delete'|trans }}
+    </button>
+</form>

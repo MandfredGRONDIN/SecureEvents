@@ -1,3 +1,4 @@
 validator.email_already_used: 'An account already exists with this email address.'
 event.max_capacity.negative: 'Capacity cannot be negative.'
 event.start_date.past: 'The start date cannot be in the past.'
+validator.category_name_required: 'The category name is required.'

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\Category;
 use App\Entity\Event;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -69,9 +71,22 @@ final class SeedEventsCommand extends Command
         'Événement convivial et format court.',
     ];
 
+    /** Noms des catégories à créer si aucune n'existe (seed). */
+    private const CATEGORY_NAMES = [
+        'Conférence',
+        'Workshop',
+        'Meetup',
+        'Formation',
+        'Hackathon',
+        'Networking',
+        'Webinaire',
+        'Team building',
+    ];
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
+        private readonly CategoryRepository $categoryRepository,
     ) {
         parent::__construct();
     }
@@ -95,6 +110,7 @@ final class SeedEventsCommand extends Command
             return Command::FAILURE;
         }
 
+        $categories = $this->getOrCreateSeedCategories();
         $titles = self::TITLES;
         $locations = self::LOCATIONS;
         $descriptions = self::DESCRIPTIONS;
@@ -115,6 +131,11 @@ final class SeedEventsCommand extends Command
             // Tout événement a un créateur (obligatoire)
             $event->setCreatedBy($users[$i % \count($users)]);
 
+            // Associer une catégorie (environ 85 % des événements en ont une, pour varier)
+            if ($categories !== [] && $i % 7 !== 5) {
+                $event->setCategory($categories[$i % \count($categories)]);
+            }
+
             $this->entityManager->persist($event);
             $created++;
         }
@@ -123,9 +144,30 @@ final class SeedEventsCommand extends Command
 
         $io->success([
             sprintf('%d événement(s) créé(s).', $created),
-            'Répartition : mélange de publiés / non publiés et de créateurs différents pour tester la visibilité.',
+            'Répartition : mélange de publiés / non publiés, créateurs différents et catégories pour tester la visibilité.',
         ]);
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Retourne les catégories existantes, ou les crée à partir de CATEGORY_NAMES si aucune n'existe.
+     *
+     * @return list<Category>
+     */
+    private function getOrCreateSeedCategories(): array
+    {
+        $existing = $this->categoryRepository->findAllOrderedByName();
+        if ($existing !== []) {
+            return $existing;
+        }
+        foreach (self::CATEGORY_NAMES as $name) {
+            $category = new Category();
+            $category->setName($name);
+            $category->computeSlug();
+            $this->entityManager->persist($category);
+        }
+        $this->entityManager->flush();
+        return $this->categoryRepository->findAllOrderedByName();
     }
 }

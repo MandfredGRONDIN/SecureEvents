@@ -28,6 +28,11 @@ final class AdminService
                 'label_key' => 'app.admin.manage_events',
                 'description_key' => 'app.admin.manage_events_desc',
             ],
+            [
+                'route' => 'app_admin_category_index',
+                'label_key' => 'app.admin.manage_categories',
+                'description_key' => 'app.admin.manage_categories_desc',
+            ],
         ];
     }
 }

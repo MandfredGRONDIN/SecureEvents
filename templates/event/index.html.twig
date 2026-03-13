@@ -43,6 +43,17 @@
                            placeholder="{{ 'app.filter.location_placeholder'|trans }}"
                            class="w-full rounded-lg border border-cyan-200/20 bg-ink-950 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-400/50 focus:outline-none focus:ring-1 focus:ring-cyan-400/30">
                 </div>
+                <div class="min-w-[10rem]">
+                    <label for="filter-category" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">{{ 'app.filter.category'|trans }}</label>
+                    <select id="filter-category" name="category"
+                            class="w-full rounded-lg border border-cyan-200/20 bg-ink-950 px-3 py-2 text-sm text-slate-100 focus:border-cyan-400/50 focus:outline-none focus:ring-1 focus:ring-cyan-400/30">
+                        <option value="">{{ 'app.filter.all'|trans }}</option>
+                        <option value="none" {{ (filters.category|default('')) == 'none' ? 'selected' : '' }}>{{ 'app.filter.category_none'|trans }}</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {{ (filters.category|default('')) == cat.id ? 'selected' : '' }}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 {% if is_granted('ROLE_USER') %}
                 <div>
                     <label for="filter-published" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">{{ 'app.filter.status'|trans }}</label>
@@ -111,6 +122,12 @@
                                 <dt class="font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.location'|trans }}</dt>
                                 <dd class="mt-1 text-slate-100 truncate">{{ event.location }}</dd>
                             </div>
+                            {% if event.category %}
+                            <div class="col-span-2 rounded-xl border border-cyan-200/10 bg-black/10 p-3">
+                                <dt class="font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.category'|trans }}</dt>
+                                <dd class="mt-1 text-slate-100">{{ event.category.name }}</dd>
+                            </div>
+                            {% endif %}
                             <div class="col-span-2 rounded-xl border border-cyan-200/10 bg-black/10 p-3">
                                 <dt class="font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.creator'|trans }}</dt>
                                 <dd class="mt-1 text-slate-100 truncate">

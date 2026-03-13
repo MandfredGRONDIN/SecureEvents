@@ -121,6 +121,15 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('filterPublished', $filters['published'] === '1');
         }
 
+        if (isset($filters['category']) && $filters['category'] !== '') {
+            if ($filters['category'] === 'none') {
+                $qb->andWhere('e.category IS NULL');
+            } else {
+                $qb->andWhere('e.category = :categoryId')
+                    ->setParameter('categoryId', (int) $filters['category']);
+            }
+        }
+
         return $qb;
     }
 
