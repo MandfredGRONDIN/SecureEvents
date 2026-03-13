@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Event;
 use App\Entity\User;
 use App\Form\ProfileType;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ProfileService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +15,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Contrôleur du profil utilisateur connecté (CDC : Participant peut modifier ses informations personnelles).
+ * Contrôleur HTTP du profil utilisateur connecté : délègue au ProfileService et rend les vues.
+ * Responsable uniquement de la réception des requêtes, CSRF, flash et construction des réponses.
  */
 #[Route('/profile')]
 #[IsGranted('ROLE_USER')]
@@ -26,7 +26,7 @@ final class ProfileController extends AbstractController
      * Affiche et traite le formulaire de modification du profil (prénom, nom, email).
      */
     #[Route('/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ProfileService $profileService): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -37,7 +37,7 @@ final class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $profileService->updateUser($user);
             $this->addFlash('success', 'flash.profile_updated');
 
             return $this->redirectToRoute('app_profile_edit');
@@ -50,13 +50,12 @@ final class ProfileController extends AbstractController
     }
 
     /**
-     * Supprime le compte de l'utilisateur connecté : retire toutes ses réservations,
-     * supprime les événements qu'il a créés (et leurs réservations), puis supprime l'utilisateur et déconnecte.
+     * Supprime le compte de l'utilisateur connecté puis déconnecte (CSRF vérifié).
      */
     #[Route('/delete', name: 'app_profile_delete', methods: ['POST'])]
     public function delete(
         Request $request,
-        EntityManagerInterface $entityManager,
+        ProfileService $profileService,
         TokenStorageInterface $tokenStorage
     ): Response {
         $user = $this->getUser();
@@ -71,25 +70,7 @@ final class ProfileController extends AbstractController
             return $this->redirectToRoute('app_profile_edit');
         }
 
-        // Retirer l'utilisateur de tous les événements (supprimer ses réservations)
-        foreach ($user->getReservations() as $reservation) {
-            $entityManager->remove($reservation);
-        }
-
-        // Supprimer les événements créés par l'utilisateur (et leurs réservations)
-        $createdEvents = $user->getCreatedEvents()->toArray();
-        foreach ($createdEvents as $event) {
-            if (!$event instanceof Event) {
-                continue;
-            }
-            foreach ($event->getReservations() as $reservation) {
-                $entityManager->remove($reservation);
-            }
-            $entityManager->remove($event);
-        }
-
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $profileService->deleteAccount($user);
 
         // Déconnexion : vider le token (le message flash reste en session pour la page d'accueil)
         $tokenStorage->setToken(null);

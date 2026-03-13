@@ -10,6 +10,14 @@ app.nav.login: 'Log in'
 app.nav.logout: 'Log out'
 app.nav.account_connected: 'Account connected'
 
+# Administration (dashboard)
+app.admin.title: 'Administration'
+app.admin.subtitle: 'Dashboard — manage users and events.'
+app.admin.manage_users: 'User management'
+app.admin.manage_users_desc: 'View and manage user accounts.'
+app.admin.manage_events: 'Event management'
+app.admin.manage_events_desc: 'Create, edit and publish events.'
+
 # Events
 app.event.title: 'Events'
 app.event.title_single: 'Event'

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Api;
 
-use App\Repository\EventRepository;
+use App\Service\EventService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * Contrôleur API REST pour les événements (endpoint destiné aux partenaires et applications mobiles).
+ * Contrôleur API REST des événements : délègue au EventService, sérialise en JSON.
  */
 #[Route('/api')]
 final class EventApiController extends AbstractController
@@ -19,9 +21,9 @@ final class EventApiController extends AbstractController
      * Liste des événements futurs et publiés au format JSON.
      */
     #[Route('/events', name: 'api_events_list', methods: ['GET'])]
-    public function list(EventRepository $eventRepository, SerializerInterface $serializer): Response
+    public function list(EventService $eventService, SerializerInterface $serializer): Response
     {
-        $events = $eventRepository->findFuturePublished();
+        $events = $eventService->getFuturePublishedEvents();
 
         $json = $serializer->serialize($events, 'json', [
             'groups' => ['api:event:list'],

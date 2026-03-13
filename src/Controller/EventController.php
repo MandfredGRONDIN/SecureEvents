@@ -3,30 +3,30 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Entity\Reservation;
 use App\Entity\User;
 use App\Form\EventType;
-use App\Repository\EventRepository;
-use App\Repository\ReservationRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\EventService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Contrôleur HTTP des événements : délègue au EventService et rend les vues.
+ * Responsable de l'autorisation (EVENT_VIEW, EVENT_EDIT, EVENT_DELETE), CSRF et construction des réponses.
+ */
 #[Route('/event')]
 final class EventController extends AbstractController
 {
     private const EVENTS_PER_PAGE = 9;
 
     /**
-     * Liste des événements visibles pour l'utilisateur, avec filtres et pagination (9 par page).
+     * Liste des événements visibles pour l'utilisateur, avec filtres et pagination.
      */
     #[Route(name: 'app_event_index', methods: ['GET'])]
-    public function index(Request $request, EventRepository $eventRepository): Response
+    public function index(Request $request, EventService $eventService): Response
     {
         $user = $this->getUser();
         $filters = [
@@ -36,22 +36,24 @@ final class EventController extends AbstractController
             'location' => $request->query->getString('location'),
             'published' => $request->query->getString('published'),
         ];
-
         $page = max(1, (int) $request->query->get('page', 1));
-        $result = $eventRepository->findVisibleForUserWithFiltersPaginated($user, $filters, $page, self::EVENTS_PER_PAGE);
-        $totalPages = $result['total'] > 0 ? (int) ceil($result['total'] / self::EVENTS_PER_PAGE) : 1;
+
+        $data = $eventService->getListData($user, $filters, $page, self::EVENTS_PER_PAGE);
 
         return $this->render('event/index.html.twig', [
-            'events' => $result['events'],
+            'events' => $data['events'],
             'filters' => $filters,
             'current_page' => $page,
-            'total_pages' => $totalPages,
-            'total_events' => $result['total'],
+            'total_pages' => $data['total_pages'],
+            'total_events' => $data['total'],
         ]);
     }
 
+    /**
+     * Création d'un nouvel événement (utilisateur connecté).
+     */
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EventService $eventService): Response
     {
         $user = $this->getUser();
         if ($user === null) {
@@ -64,8 +66,7 @@ final class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($event);
-            $entityManager->flush();
+            $eventService->createEvent($event);
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -76,36 +77,32 @@ final class EventController extends AbstractController
         ]);
     }
 
+    /**
+     * Détail d'un événement (visible selon EVENT_VIEW).
+     */
     #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
-    public function show(Event $event, ReservationRepository $reservationRepository): Response
+    public function show(Event $event, EventService $eventService): Response
     {
         if (!$this->isGranted('EVENT_VIEW', $event)) {
             throw new NotFoundHttpException('Événement non trouvé.');
         }
 
         $user = $this->getUser();
-        $userReservation = $user instanceof User
-            ? $reservationRepository->findOneByEventAndParticipant($event, $user)
-            : null;
-        $placesRestantes = $event->getMaxCapacity() - $event->getReservations()->count();
-        $canReserve = $user instanceof User
-            && $userReservation === null
-            && $placesRestantes > 0;
+        $viewData = $eventService->getShowViewData($event, $user);
 
         return $this->render('event/show.html.twig', [
             'event' => $event,
-            'userReservation' => $userReservation,
-            'canReserve' => $canReserve,
+            'userReservation' => $viewData['userReservation'],
+            'canReserve' => $viewData['canReserve'],
         ]);
     }
 
     /**
      * Réserver une place pour l'événement (utilisateur connecté).
-     * Vérifie qu'il n'a pas déjà réservé et qu'il reste des places.
      */
     #[Route('/{id}/reserve', name: 'app_event_reserve', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function reserve(Request $request, Event $event, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository, TranslatorInterface $translator): Response
+    public function reserve(Request $request, Event $event, EventService $eventService): Response
     {
         if (!$this->isGranted('EVENT_VIEW', $event)) {
             throw new NotFoundHttpException('Événement non trouvé.');
@@ -117,35 +114,28 @@ final class EventController extends AbstractController
         }
 
         if (!$this->isCsrfTokenValid('event_reserve_' . $event->getId(), (string) $request->request->get('_token'))) {
-            $this->addFlash('error', $translator->trans('flash.csrf_invalid'));
+            $this->addFlash('error', 'flash.csrf_invalid');
             return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        $existing = $reservationRepository->findOneByEventAndParticipant($event, $user);
-        if ($existing !== null) {
-            $this->addFlash('error', $translator->trans('flash.already_reserved'));
-            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
+        $result = $eventService->reserve($event, $user);
+
+        if ($result === 'already_reserved') {
+            $this->addFlash('error', 'flash.already_reserved');
+        } elseif ($result === 'event_full') {
+            $this->addFlash('error', 'flash.event_full');
+        } else {
+            $this->addFlash('success', 'flash.reservation_saved');
         }
 
-        if ($event->getReservations()->count() >= $event->getMaxCapacity()) {
-            $this->addFlash('error', $translator->trans('flash.event_full'));
-            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
-        }
-
-        $reservation = new Reservation();
-        $reservation->setParticipant($user);
-        $reservation->setEvent($event);
-        $reservation->setCreatedAt(new \DateTimeImmutable());
-
-        $entityManager->persist($reservation);
-        $entityManager->flush();
-
-        $this->addFlash('success', $translator->trans('flash.reservation_saved'));
         return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * Édition d'un événement (autorisé selon EVENT_EDIT).
+     */
     #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Event $event, EventService $eventService): Response
     {
         if (!$this->isGranted('EVENT_EDIT', $event)) {
             throw new NotFoundHttpException('Événement non trouvé.');
@@ -155,7 +145,7 @@ final class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $eventService->updateEvent($event);
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -166,16 +156,18 @@ final class EventController extends AbstractController
         ]);
     }
 
+    /**
+     * Suppression d'un événement (autorisé selon EVENT_DELETE).
+     */
     #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
-    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Event $event, EventService $eventService): Response
     {
         if (!$this->isGranted('EVENT_DELETE', $event)) {
             throw new NotFoundHttpException('Événement non trouvé.');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $request->getPayload()->getString('_token'))) {
+            $eventService->deleteEvent($event);
         }
 
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);

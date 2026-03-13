@@ -10,6 +10,14 @@ app.nav.login: 'Connexion'
 app.nav.logout: 'Déconnexion'
 app.nav.account_connected: 'Compte connecté'
 
+# Administration (tableau de bord)
+app.admin.title: 'Administration'
+app.admin.subtitle: 'Tableau de bord — gestion des utilisateurs et des événements.'
+app.admin.manage_users: 'Gestion des utilisateurs'
+app.admin.manage_users_desc: 'Consulter et gérer la liste des comptes utilisateurs.'
+app.admin.manage_events: 'Gestion des événements'
+app.admin.manage_events_desc: 'Créer, modifier et publier les événements.'
+
 # Événements
 app.event.title: 'Événements'
 app.event.title_single: 'Événement'
