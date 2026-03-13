@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Users{% endblock %}
+{% block title %}{{ 'app.user.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="flex flex-col gap-6">
         <div>
-            <h1 class="font-display text-2xl tracking-wide text-slate-50">Users</h1>
-            <p class="mt-1 text-sm text-slate-400">Liste des utilisateurs.</p>
+            <h1 class="font-display text-2xl tracking-wide text-slate-50">{{ 'app.user.title'|trans }}</h1>
+            <p class="mt-1 text-sm text-slate-400">{{ 'app.user.subtitle'|trans }}</p>
         </div>
 
         <div class="overflow-hidden rounded-2xl border border-cyan-200/10 bg-ink-900/30 shadow-glow">
@@ -14,11 +14,11 @@
                 <table class="min-w-full divide-y divide-cyan-200/10 text-sm">
                     <thead class="bg-ink-950/40">
                         <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th class="px-5 py-4">ID</th>
-                            <th class="px-5 py-4">Email</th>
-                            <th class="px-5 py-4">First name</th>
-                            <th class="px-5 py-4">Last name</th>
-                            <th class="px-5 py-4">Created at</th>
+                            <th class="px-5 py-4">{{ 'app.user.th_id'|trans }}</th>
+                            <th class="px-5 py-4">{{ 'app.user.th_email'|trans }}</th>
+                            <th class="px-5 py-4">{{ 'app.user.th_first_name'|trans }}</th>
+                            <th class="px-5 py-4">{{ 'app.user.th_last_name'|trans }}</th>
+                            <th class="px-5 py-4">{{ 'app.user.th_created_at'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-cyan-200/10">
@@ -32,7 +32,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="5" class="px-5 py-10 text-center text-slate-400">No users found.</td>
+                            <td colspan="5" class="px-5 py-10 text-center text-slate-400">{{ 'app.user.no_users'|trans }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

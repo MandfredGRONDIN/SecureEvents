@@ -1,5 +1,12 @@
 # Interface — English
 
+# Brand / header
+app.brand.name: 'SecureEvents'
+app.brand.tagline: 'IT • Cybersecurity • Ops'
+
+# Common (reusable labels)
+app.common.id: 'ID'
+
 # Navigation
 app.nav.events: 'Events'
 app.nav.my_reservations: 'My reservations'
@@ -18,8 +25,19 @@ app.admin.manage_users_desc: 'View and manage user accounts.'
 app.admin.manage_events: 'Event management'
 app.admin.manage_events_desc: 'Create, edit and publish events.'
 
+# Users (admin list)
+app.user.title: 'Users'
+app.user.subtitle: 'User list.'
+app.user.th_id: 'ID'
+app.user.th_email: 'Email'
+app.user.th_first_name: 'First name'
+app.user.th_last_name: 'Last name'
+app.user.th_created_at: 'Created at'
+app.user.no_users: 'No users found.'
+
 # Events
 app.event.title: 'Events'
+app.event.index_title: 'Events — SecureEvents'
 app.event.title_single: 'Event'
 app.event.subtitle: 'Event management, capacity, publishing.'
 app.event.create: 'Create event'
@@ -116,6 +134,10 @@ app.security.submit_login: 'Log in'
 app.security.no_account: "Don't have an account yet?"
 app.security.register: 'Sign up'
 app.security.reload_csrf: 'Reload the page (F5) then try again.'
+app.security.email_placeholder: 'you@example.com'
+
+# Default title (base)
+app.default_title: 'SecureEvents'
 
 # Footer
 app.footer.baseline: 'SecureEvents — hardened UI baseline'

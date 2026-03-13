@@ -1,5 +1,12 @@
 # Interface — Français (défaut)
 
+# Marque / en-tête
+app.brand.name: 'SecureEvents'
+app.brand.tagline: 'IT • Cybersécurité • Ops'
+
+# Commun (libellés réutilisables)
+app.common.id: 'ID'
+
 # Navigation
 app.nav.events: 'Événements'
 app.nav.my_reservations: 'Mes réservations'
@@ -18,8 +25,19 @@ app.admin.manage_users_desc: 'Consulter et gérer la liste des comptes utilisate
 app.admin.manage_events: 'Gestion des événements'
 app.admin.manage_events_desc: 'Créer, modifier et publier les événements.'
 
+# Utilisateurs (liste admin)
+app.user.title: 'Utilisateurs'
+app.user.subtitle: 'Liste des utilisateurs.'
+app.user.th_id: 'ID'
+app.user.th_email: 'Email'
+app.user.th_first_name: 'Prénom'
+app.user.th_last_name: 'Nom'
+app.user.th_created_at: 'Créé le'
+app.user.no_users: 'Aucun utilisateur.'
+
 # Événements
 app.event.title: 'Événements'
+app.event.index_title: 'Événements — SecureEvents'
 app.event.title_single: 'Événement'
 app.event.subtitle: 'Gestion des événements, capacité, publication.'
 app.event.create: 'Créer un événement'
@@ -116,6 +134,10 @@ app.security.submit_login: 'Se connecter'
 app.security.no_account: 'Pas encore de compte ?'
 app.security.register: "S'inscrire"
 app.security.reload_csrf: 'Rechargez la page (F5) puis réessayez.'
+app.security.email_placeholder: 'vous@exemple.fr'
+
+# Titre par défaut (base)
+app.default_title: 'SecureEvents'
 
 # Pied de page
 app.footer.baseline: 'SecureEvents — hardened UI baseline'

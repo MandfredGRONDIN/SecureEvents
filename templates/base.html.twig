@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{{ 'app.default_title'|trans }}{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
             {# Tailwind (CDN) for a build-free, consistent UI #}
@@ -153,8 +153,8 @@
                         <span class="relative font-display text-sm text-cyan-100">SE</span>
                     </span>
                     <div class="leading-tight">
-                        <div class="font-display text-sm tracking-wide text-slate-100">SecureEvents</div>
-                        <div class="text-xs text-slate-400">IT • Cybersecurity • Ops</div>
+                        <div class="font-display text-sm tracking-wide text-slate-100">{{ 'app.brand.name'|trans }}</div>
+                        <div class="text-xs text-slate-400">{{ 'app.brand.tagline'|trans }}</div>
                     </div>
                 </a>
 
