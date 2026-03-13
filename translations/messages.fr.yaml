@@ -49,6 +49,10 @@ app.user.th_first_name: 'Prénom'
 app.user.th_last_name: 'Nom'
 app.user.th_created_at: 'Créé le'
 app.user.no_users: 'Aucun utilisateur.'
+app.user.show_title: 'Fiche utilisateur'
+app.user.roles: 'Rôles'
+app.user.reset_password_explanation: 'Envoie un email à cet utilisateur avec un lien pour définir un nouveau mot de passe (valide 1 h).'
+app.user.send_reset_password: 'Envoyer un lien de réinitialisation'
 
 # Événements
 app.event.title: 'Événements'
@@ -153,6 +157,12 @@ app.security.no_account: 'Pas encore de compte ?'
 app.security.register: "S'inscrire"
 app.security.reload_csrf: 'Rechargez la page (F5) puis réessayez.'
 app.security.email_placeholder: 'vous@exemple.fr'
+app.security.forgot_password: 'Mot de passe oublié'
+app.security.forgot_password_help: 'Saisissez votre adresse email pour recevoir un lien de réinitialisation.'
+app.security.reset_password_title: 'Définir un nouveau mot de passe'
+app.security.reset_password_help: 'Choisissez un nouveau mot de passe pour votre compte.'
+app.security.back_login: 'Retour à la connexion'
+app.security.reset_password: 'Réinitialisation du mot de passe'
 
 # Titre par défaut (base)
 app.default_title: 'SecureEvents'
@@ -211,3 +221,26 @@ flash.select_event: 'Veuillez sélectionner un événement.'
 flash.category_created: 'Catégorie créée.'
 flash.category_updated: 'Catégorie mise à jour.'
 flash.category_deleted: 'Catégorie supprimée.'
+flash.reset_password_email_sent: 'Si un compte existe pour cette adresse, un email avec un lien de réinitialisation a été envoyé.'
+flash.reset_password_token_invalid: 'Ce lien a expiré ou est invalide. Demandez un nouveau lien.'
+flash.reset_password_done: 'Votre mot de passe a été mis à jour. Vous pouvez vous connecter.'
+flash.reset_password_email_sent_admin: "Un email de réinitialisation a été envoyé à l'utilisateur."
+
+# Formulaire demande de réinitialisation
+form.request_reset.email: 'Adresse email'
+form.request_reset.email_required: 'Veuillez saisir votre adresse email.'
+form.request_reset.submit: 'Envoyer le lien'
+
+# Formulaire nouveau mot de passe
+form.reset_password.new_password: 'Nouveau mot de passe'
+form.reset_password.confirm: 'Confirmer le mot de passe'
+form.reset_password.mismatch: 'Les deux mots de passe ne correspondent pas.'
+form.reset_password.submit: 'Définir le mot de passe'
+
+# Emails (réinitialisation)
+email.reset.subject: 'Réinitialisation de votre mot de passe'
+email.reset.hello: 'Bonjour %name%,'
+email.reset.body: 'Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour en définir un nouveau.'
+email.reset.cta: 'Définir mon mot de passe'
+email.reset.expiry: 'Ce lien expire dans %hours% heure(s).'
+email.reset.ignore: "Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer cet email."

@@ -103,5 +103,5 @@ db-reset:
 	$(EXEC_APP) php bin/console app:db:reset-with-user \
 		--email="$(or $(EMAIL),admin@admin.fr)" \
 		--password="$(or $(PASSWORD),admin)" \
-		--first-name="$(or $(FIRST),Admin)" \
-		--last-name="$(or $(LAST),SecureEvents)"
+		--first-name="$(or $(FIRST),TheAdmin)" \
+		--last-name="$(or $(LAST),TheAdmin)"

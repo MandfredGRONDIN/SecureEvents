@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.user.show_title'|trans }} — {{ 'app.brand.name'|trans }}{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col gap-6">
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <h1 class="font-display text-2xl tracking-wide text-slate-50">{{ 'app.user.show_title'|trans }}</h1>
+                <p class="mt-1 text-sm text-slate-400">{{ user.email }}</p>
+            </div>
+            <a href="{{ path('app_user_index') }}" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-slate-300 ring-1 ring-white/10 hover:bg-white/5 transition">
+                <span class="font-display">←</span>
+                <span>{{ 'app.event.back_to_list'|trans }}</span>
+            </a>
+        </div>
+
+        <div class="rounded-2xl border border-cyan-200/10 bg-ink-900/30 p-6 shadow-glow space-y-6">
+            <dl class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.common.id'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ user.id }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.user.th_email'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ user.email }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.user.th_first_name'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ user.firstName }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.user.th_last_name'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ user.lastName }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.user.th_created_at'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ user.createdAt ? user.createdAt|date('Y-m-d') : '' }}</dd>
+                </div>
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.user.roles'|trans }}</dt>
+                    <dd class="mt-1 text-sm text-slate-100">{{ user.roles|join(', ') }}</dd>
+                </div>
+            </dl>
+
+            <div class="border-t border-cyan-200/10 pt-6">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">{{ 'app.security.reset_password'|trans }}</h2>
+                <p class="text-sm text-slate-300 mb-4">{{ 'app.user.reset_password_explanation'|trans }}</p>
+                <form method="post" action="{{ path('app_user_reset_password', { id: user.id }) }}" class="inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('user_reset_password_' ~ user.id) }}">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-cyan-400/15 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/25 hover:bg-cyan-400/20 transition">
+                        {{ 'app.user.send_reset_password'|trans }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

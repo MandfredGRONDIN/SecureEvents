@@ -49,6 +49,10 @@
             </button>
 
             <p class="text-center text-sm text-slate-400">
+                <a href="{{ path('app_request_reset_password') }}" class="font-medium text-cyan-300 hover:text-cyan-200 underline underline-offset-2">{{ 'app.security.forgot_password'|trans }}</a>
+            </p>
+
+            <p class="text-center text-sm text-slate-400">
                 {{ 'app.security.no_account'|trans }}
                 <a href="{{ path('app_register') }}" class="font-medium text-cyan-300 hover:text-cyan-200 underline underline-offset-2">{{ 'app.security.register'|trans }}</a>
             </p>

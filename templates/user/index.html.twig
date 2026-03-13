@@ -19,6 +19,7 @@
                             <th class="px-5 py-4">{{ 'app.user.th_first_name'|trans }}</th>
                             <th class="px-5 py-4">{{ 'app.user.th_last_name'|trans }}</th>
                             <th class="px-5 py-4">{{ 'app.user.th_created_at'|trans }}</th>
+                            <th class="px-5 py-4"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-cyan-200/10">
@@ -29,10 +30,13 @@
                             <td class="px-5 py-4 text-slate-300">{{ user.firstName }}</td>
                             <td class="px-5 py-4 text-slate-300">{{ user.lastName }}</td>
                             <td class="px-5 py-4 text-slate-300">{{ user.createdAt ? user.createdAt|date('Y-m-d') : '' }}</td>
+                            <td class="px-5 py-4">
+                                <a href="{{ path('app_user_show', { id: user.id }) }}" class="rounded-lg px-3 py-2 text-xs font-semibold text-cyan-100 ring-1 ring-cyan-300/20 hover:bg-cyan-400/10 transition">{{ 'app.event.view'|trans }}</a>
+                            </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="5" class="px-5 py-10 text-center text-slate-400">{{ 'app.user.no_users'|trans }}</td>
+                            <td colspan="6" class="px-5 py-10 text-center text-slate-400">{{ 'app.user.no_users'|trans }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

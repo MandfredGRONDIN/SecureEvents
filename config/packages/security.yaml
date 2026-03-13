@@ -51,6 +51,7 @@ security:
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/user/login, roles: PUBLIC_ACCESS }
         - { path: ^/user/logout, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
         # Création et édition d'événements : réservées aux utilisateurs connectés
         - { path: ^/event/new, roles: ROLE_USER }
         - { path: ^/event/.+/edit, roles: ROLE_USER }

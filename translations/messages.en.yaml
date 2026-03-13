@@ -49,6 +49,10 @@ app.user.th_first_name: 'First name'
 app.user.th_last_name: 'Last name'
 app.user.th_created_at: 'Created at'
 app.user.no_users: 'No users found.'
+app.user.show_title: 'User profile'
+app.user.roles: 'Roles'
+app.user.reset_password_explanation: 'Sends an email to this user with a link to set a new password (valid 1 hour).'
+app.user.send_reset_password: 'Send reset link'
 
 # Events
 app.event.title: 'Events'
@@ -153,6 +157,12 @@ app.security.no_account: "Don't have an account yet?"
 app.security.register: 'Sign up'
 app.security.reload_csrf: 'Reload the page (F5) then try again.'
 app.security.email_placeholder: 'you@example.com'
+app.security.forgot_password: 'Forgot password'
+app.security.forgot_password_help: 'Enter your email address to receive a reset link.'
+app.security.reset_password_title: 'Set a new password'
+app.security.reset_password_help: 'Choose a new password for your account.'
+app.security.back_login: 'Back to log in'
+app.security.reset_password: 'Password reset'
 
 # Default title (base)
 app.default_title: 'SecureEvents'
@@ -211,3 +221,26 @@ flash.select_event: 'Please select an event.'
 flash.category_created: 'Category created.'
 flash.category_updated: 'Category updated.'
 flash.category_deleted: 'Category deleted.'
+flash.reset_password_email_sent: 'If an account exists for this address, an email with a reset link has been sent.'
+flash.reset_password_token_invalid: 'This link has expired or is invalid. Please request a new link.'
+flash.reset_password_done: 'Your password has been updated. You can now log in.'
+flash.reset_password_email_sent_admin: 'A reset email has been sent to the user.'
+
+# Request reset form
+form.request_reset.email: 'Email address'
+form.request_reset.email_required: 'Please enter your email address.'
+form.request_reset.submit: 'Send link'
+
+# New password form
+form.reset_password.new_password: 'New password'
+form.reset_password.confirm: 'Confirm password'
+form.reset_password.mismatch: 'The two passwords do not match.'
+form.reset_password.submit: 'Set password'
+
+# Emails (reset)
+email.reset.subject: 'Reset your password'
+email.reset.hello: 'Hello %name%,'
+email.reset.body: 'You requested a password reset. Click the button below to set a new password.'
+email.reset.cta: 'Set my password'
+email.reset.expiry: 'This link expires in %hours% hour(s).'
+email.reset.ignore: "If you did not request this reset, you can ignore this email."
