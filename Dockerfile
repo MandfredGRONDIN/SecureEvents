@@ -51,5 +51,5 @@ WORKDIR /var/www/html
 # Port du serveur PHP intégré
 EXPOSE 8000
 
-# Par défaut : serveur de développement Symfony (peut être surchargé dans docker-compose)
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+# Par défaut : serveur de développement Symfony avec script routeur (toutes les requêtes passent par index.php)
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "public/index.php"]

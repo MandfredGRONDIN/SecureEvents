@@ -12,8 +12,9 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
+    # Lier explicitement à 127.0.0.1 pour éviter les soucis IPv6/localhost
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       APP_ENV: dev
       DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-!ChangeMe!}@database:5432/${POSTGRES_DB:-app}?serverVersion=16&charset=utf8

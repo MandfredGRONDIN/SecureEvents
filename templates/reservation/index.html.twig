@@ -9,11 +9,6 @@
                 <h1 class="font-display text-2xl tracking-wide text-slate-50">Reservations</h1>
                 <p class="mt-1 text-sm text-slate-400">Vos réservations — événements auxquels vous êtes inscrit.</p>
             </div>
-            <a href="{{ path('app_reservation_new') }}"
-               class="inline-flex items-center gap-2 rounded-xl bg-cyan-400/15 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/25 shadow-glow hover:bg-cyan-400/20 hover:shadow-glowStrong transition">
-                <span class="font-display">+</span>
-                <span>Create reservation</span>
-            </a>
         </div>
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -75,7 +70,7 @@
                 </article>
             {% else %}
                 <div class="sm:col-span-2 lg:col-span-3 overflow-hidden rounded-2xl border border-cyan-200/10 bg-ink-900/30 p-8 text-center text-slate-400 shadow-glow">
-                    Aucune réservation. <a class="text-cyan-200 hover:text-cyan-100 underline underline-offset-4" href="{{ path('app_reservation_new') }}">Créer une réservation</a>.
+                    Aucune réservation. Réservez depuis la page d'un événement.
                 </div>
             {% endfor %}
         </div>
