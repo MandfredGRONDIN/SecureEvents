@@ -19,40 +19,36 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', null, [
+                'label' => 'form.registration.email',
                 'constraints' => [
-                    new NotBlank(message: 'Please enter your email.'),
-                    new Email(message: 'Please enter a valid email address.'),
+                    new NotBlank(message: 'form.registration.email_required'),
+                    new Email(message: 'form.registration.email_invalid'),
                 ],
             ])
             ->add('firstName', null, [
-                'label' => 'First name',
-                'constraints' => [new NotBlank(message: 'Please enter your first name.')],
+                'label' => 'form.registration.first_name',
+                'constraints' => [new NotBlank(message: 'form.registration.first_name_required')],
             ])
             ->add('lastName', null, [
-                'label' => 'Last name',
-                'constraints' => [new NotBlank(message: 'Please enter your last name.')],
+                'label' => 'form.registration.last_name',
+                'constraints' => [new NotBlank(message: 'form.registration.last_name_required')],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'label' => 'form.registration.agree_terms',
                 'constraints' => [
-                    new IsTrue(
-                        message: 'You should agree to our terms.',
-                    ),
+                    new IsTrue(message: 'form.registration.agree_terms_required'),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
+                'label' => 'form.registration.password',
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank(
-                        message: 'Please enter a password',
-                    ),
+                    new NotBlank(message: 'form.registration.password_required'),
                     new Length(
                         min: 6,
-                        minMessage: 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
+                        minMessage: 'form.registration.password_min',
                         max: 4096,
                     ),
                 ],
@@ -64,6 +60,7 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'translation_domain' => 'messages',
         ]);
     }
 }

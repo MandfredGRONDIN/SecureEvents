@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.profile.edit_title'|trans }} — SecureEvents{% endblock %}
+
+{% block body %}
+<div class="mx-auto max-w-md">
+    <div class="rounded-2xl border border-cyan-200/15 bg-ink-900/40 p-8 shadow-glow">
+        <h1 class="font-display text-xl tracking-wide text-slate-100 mb-6">{{ 'app.profile.edit_title'|trans }}</h1>
+
+        {% for message in app.flashes('success') %}
+            <div class="mb-4 rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-200">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {{ form_errors(form) }}
+
+        {{ form_start(form, { attr: { class: 'space-y-4' } }) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.firstName) }}
+            {{ form_row(form.lastName) }}
+
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+                <button type="submit"
+                        class="rounded-lg bg-gradient-to-r from-neon-500/90 to-cyan-500/90 px-4 py-3 font-medium text-ink-950 shadow-glow transition hover:shadow-glowStrong focus:outline-none focus:ring-2 focus:ring-neon-400/40">
+                    {{ 'form.profile.submit'|trans }}
+                </button>
+                <a href="{{ path('app_event_index') }}" class="rounded-lg px-4 py-3 text-sm font-medium text-slate-300 ring-1 ring-white/10 hover:bg-white/5 transition">
+                    {{ 'form.button.cancel'|trans }}
+                </a>
+            </div>
+        {{ form_end(form) }}
+
+        <hr class="my-8 border-slate-600/40">
+
+        <h2 class="font-display text-sm font-semibold text-slate-300 mb-2">{{ 'app.profile.danger_zone'|trans }}</h2>
+        <p class="text-sm text-slate-400 mb-4">{{ 'app.profile.delete_explanation'|trans }}</p>
+        <form method="post" action="{{ path('app_profile_delete') }}" onsubmit="return confirm('{{ 'app.profile.delete_confirm'|trans|e('js') }}');" class="inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('profile_delete') }}">
+            <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-rose-500/10 px-4 py-2 text-sm font-semibold text-rose-100 ring-1 ring-rose-300/20 hover:bg-rose-500/15 transition">
+                {{ 'app.profile.delete_account'|trans }}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

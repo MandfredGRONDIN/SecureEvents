@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Reservation{% endblock %}
+{% block title %}{{ 'app.reservation.new_title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="flex flex-col gap-6">
         <div>
-            <h1 class="font-display text-2xl tracking-wide text-slate-50">Create reservation</h1>
-            <p class="mt-1 text-sm text-slate-400">Nouvelle entrée — conservée pour audit.</p>
+            <h1 class="font-display text-2xl tracking-wide text-slate-50">{{ 'app.reservation.new_title'|trans }}</h1>
+            <p class="mt-1 text-sm text-slate-400">{{ 'app.reservation.new_subtitle'|trans }}</p>
         </div>
 
         {% for message in app.flashes('error') %}
             <div class="rounded-xl border border-rose-300/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
-                {{ message }}
+                {{ message|trans }}
             </div>
         {% endfor %}
         {% for message in app.flashes('success') %}
             <div class="rounded-xl border border-emerald-300/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200" role="alert">
-                {{ message }}
+                {{ message|trans }}
             </div>
         {% endfor %}
 
@@ -24,7 +24,7 @@
 
         <a href="{{ path('app_reservation_index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-slate-100">
             <span class="font-display">←</span>
-            <span>back to list</span>
+            <span>{{ 'app.event.back_to_list'|trans }}</span>
         </a>
     </div>
 {% endblock %}

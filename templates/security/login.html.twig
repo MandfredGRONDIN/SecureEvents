@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Connexion — SecureEvents{% endblock %}
+{% block title %}{{ 'app.security.login_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="mx-auto max-w-md">
     <div class="rounded-2xl border border-cyan-200/15 bg-ink-900/40 p-8 shadow-glow">
-        <h1 class="font-display text-xl tracking-wide text-slate-100 mb-6">Connexion</h1>
+        <h1 class="font-display text-xl tracking-wide text-slate-100 mb-6">{{ 'app.security.login'|trans }}</h1>
 
         {% if error %}
             <div class="mb-4 rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
                 {% if error.messageKey == 'Invalid CSRF token.' %}
-                    <p class="mt-2 text-xs text-red-300">Rechargez la page (F5) puis réessayez.</p>
+                    <p class="mt-2 text-xs text-red-300">{{ 'app.security.reload_csrf'|trans }}</p>
                 {% endif %}
             </div>
         {% endif %}
@@ -20,7 +20,7 @@
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
             <div>
-                <label for="username" class="mb-1.5 block text-sm font-medium text-slate-300">Email</label>
+                <label for="username" class="mb-1.5 block text-sm font-medium text-slate-300">{{ 'app.security.email'|trans }}</label>
                 <input type="email"
                        name="_username"
                        id="username"
@@ -33,7 +33,7 @@
             </div>
 
             <div>
-                <label for="password" class="mb-1.5 block text-sm font-medium text-slate-300">Mot de passe</label>
+                <label for="password" class="mb-1.5 block text-sm font-medium text-slate-300">{{ 'app.security.password'|trans }}</label>
                 <input type="password"
                        name="_password"
                        id="password"
@@ -45,12 +45,12 @@
 
             <button type="submit"
                     class="w-full rounded-lg bg-gradient-to-r from-neon-500/90 to-cyan-500/90 px-4 py-3 font-medium text-ink-950 shadow-glow transition hover:shadow-glowStrong focus:outline-none focus:ring-2 focus:ring-neon-400/40">
-                Se connecter
+                {{ 'app.security.submit_login'|trans }}
             </button>
 
             <p class="text-center text-sm text-slate-400">
-                Pas encore de compte ?
-                <a href="{{ path('app_register') }}" class="font-medium text-cyan-300 hover:text-cyan-200 underline underline-offset-2">S'inscrire</a>
+                {{ 'app.security.no_account'|trans }}
+                <a href="{{ path('app_register') }}" class="font-medium text-cyan-300 hover:text-cyan-200 underline underline-offset-2">{{ 'app.security.register'|trans }}</a>
             </p>
         </form>
     </div>

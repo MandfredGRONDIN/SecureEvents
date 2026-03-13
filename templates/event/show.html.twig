@@ -6,26 +6,26 @@
     <div class="flex flex-col gap-6">
         {% for message in app.flashes('success') %}
             <div class="rounded-xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
-                {{ message }}
+                {{ message|trans }}
             </div>
         {% endfor %}
         {% for message in app.flashes('error') %}
             <div class="rounded-xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-100">
-                {{ message }}
+                {{ message|trans }}
             </div>
         {% endfor %}
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-                <h1 class="font-display text-2xl tracking-wide text-slate-50">Event</h1>
-                <p class="mt-1 text-sm text-slate-400">Vue détaillée — inspection rapide.</p>
+                <h1 class="font-display text-2xl tracking-wide text-slate-50">{{ 'app.event.title_single'|trans }}</h1>
+                <p class="mt-1 text-sm text-slate-400">{{ 'app.event.show_subtitle'|trans }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ path('app_event_index') }}" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">
-                    Back
+                    {{ 'app.event.back'|trans }}
                 </a>
                 {% if is_granted('EVENT_EDIT', event) %}
                 <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="inline-flex items-center justify-center rounded-xl bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/20 hover:bg-cyan-400/15 transition">
-                    Edit
+                    {{ 'app.event.edit'|trans }}
                 </a>
                 {{ include('event/_delete_form.html.twig') }}
                 {% endif %}
@@ -39,49 +39,49 @@
                     <dd class="mt-1 text-sm text-slate-100">{{ event.id }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Published</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.published'|trans }}</dt>
                     <dd class="mt-1">
                         {% if event.isPublished %}
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/20 px-3 py-1 text-xs font-semibold text-emerald-100 ring-1 ring-emerald-300/40 shadow-glowStrong">
                                 <span class="h-2 w-2 rounded-full bg-emerald-300 animate-pulse"></span>
-                                <span>Yes</span>
+                                <span>{{ 'app.event.yes'|trans }}</span>
                             </span>
                         {% else %}
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800/80 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-slate-500/50">
                                 <span class="h-2 w-2 rounded-full bg-slate-500"></span>
-                                <span>No</span>
+                                <span>{{ 'app.event.no'|trans }}</span>
                             </span>
                         {% endif %}
                     </dd>
                 </div>
                 <div class="sm:col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Title</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.field_title'|trans }}</dt>
                     <dd class="mt-1 text-base font-semibold text-slate-50">{{ event.title }}</dd>
                 </div>
                 <div class="sm:col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Description</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.field_description'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-200">{{ event.description }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Start date</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.start_date'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ event.startDate ? event.startDate|date('Y-m-d') : '' }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Location</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.location'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ event.location }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Capacité</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.capacity'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ event.reservations|length }} / {{ event.maxCapacity }}</dd>
                 </div>
                 <div class="sm:col-span-2">
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Créateur</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.creator'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">
                         {% if event.createdBy %}
                             {{ event.createdBy.firstName }} {{ event.createdBy.lastName }}
                             <span class="text-slate-500">({{ event.createdBy.email }})</span>
                         {% else %}
-                            <span class="text-slate-500">Non renseigné</span>
+                            <span class="text-slate-500">{{ 'app.event.not_set'|trans }}</span>
                         {% endif %}
                     </dd>
                 </div>
@@ -91,44 +91,44 @@
             <div class="mt-8 border-t border-cyan-200/10 pt-6">
                 {% if app.user %}
                     {% if userReservation is not null %}
-                        <p class="text-sm text-slate-200 mb-3">Vous êtes inscrit à cet événement.</p>
+                        <p class="text-sm text-slate-200 mb-3">{{ 'app.reservation.you_are_registered'|trans }}</p>
                         <a href="{{ path('app_reservation_show', { id: userReservation.id }) }}" class="inline-flex items-center justify-center rounded-xl bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/20 hover:bg-cyan-400/15 transition">
-                            Voir ma réservation
+                            {{ 'app.reservation.view_mine'|trans }}
                         </a>
                     {% elseif canReserve %}
-                        <p class="text-sm text-slate-200 mb-3">Réservez votre place pour cet événement.</p>
+                        <p class="text-sm text-slate-200 mb-3">{{ 'app.reservation.reserve_place'|trans }}</p>
                         <form method="post" action="{{ path('app_event_reserve', { id: event.id }) }}" class="inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('event_reserve_' ~ event.id) }}">
                             <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100 ring-1 ring-emerald-400/30 hover:bg-emerald-500/30 transition">
-                                Réserver ma place
+                                {{ 'app.reservation.reserve_my_place'|trans }}
                             </button>
                         </form>
                     {% else %}
-                        <p class="text-sm text-slate-500">Cet événement est complet. Aucune place disponible.</p>
+                        <p class="text-sm text-slate-500">{{ 'app.reservation.event_full'|trans }}</p>
                     {% endif %}
                 {% else %}
-                    <p class="text-sm text-slate-400 mb-3">Connectez-vous pour réserver une place.</p>
+                    <p class="text-sm text-slate-400 mb-3">{{ 'app.reservation.login_to_reserve'|trans }}</p>
                     <a href="{{ path('app_login') }}" class="inline-flex items-center justify-center rounded-xl bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-100 ring-1 ring-cyan-300/20 hover:bg-cyan-400/15 transition">
-                        Se connecter
+                        {{ 'app.nav.login'|trans }}
                     </a>
                 {% endif %}
             </div>
 
             {# Tous les utilisateurs qui participent à cet événement #}
             <div class="mt-8 border-t border-cyan-200/10 pt-6">
-                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">Participants inscrits ({{ event.reservations|length }} / {{ event.maxCapacity }})</h2>
-                <p class="text-xs text-slate-500 mb-3">Tous les utilisateurs qui vont participer à cet événement.</p>
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">{{ 'app.event.participants'|trans }} ({{ event.reservations|length }} / {{ event.maxCapacity }})</h2>
+                <p class="text-xs text-slate-500 mb-3">{{ 'app.event.participants_subtitle'|trans }}</p>
                 {% if event.reservations|length > 0 %}
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {% for reservation in event.reservations %}
                             <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4 shadow-glow">
                                 <div class="font-medium {{ app.user and reservation.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ reservation.participant.firstName }} {{ reservation.participant.lastName }}</div>
-                                <div class="mt-2 text-xs text-slate-500">Réservé le {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y') : '—' }}</div>
+                                <div class="mt-2 text-xs text-slate-500">{{ 'app.event.reserved_on'|trans }} {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y') : '—' }}</div>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-sm text-slate-500">Aucun participant inscrit pour le moment.</p>
+                    <p class="text-sm text-slate-500">{{ 'app.event.no_participants'|trans }}</p>
                 {% endif %}
             </div>
         </div>

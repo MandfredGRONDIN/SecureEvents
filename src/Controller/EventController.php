@@ -15,16 +15,38 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/event')]
 final class EventController extends AbstractController
 {
+    private const EVENTS_PER_PAGE = 9;
+
+    /**
+     * Liste des événements visibles pour l'utilisateur, avec filtres et pagination (9 par page).
+     */
     #[Route(name: 'app_event_index', methods: ['GET'])]
-    public function index(EventRepository $eventRepository): Response
+    public function index(Request $request, EventRepository $eventRepository): Response
     {
         $user = $this->getUser();
+        $filters = [
+            'q' => $request->query->getString('q'),
+            'from_date' => $request->query->getString('from_date'),
+            'to_date' => $request->query->getString('to_date'),
+            'location' => $request->query->getString('location'),
+            'published' => $request->query->getString('published'),
+        ];
+
+        $page = max(1, (int) $request->query->get('page', 1));
+        $result = $eventRepository->findVisibleForUserWithFiltersPaginated($user, $filters, $page, self::EVENTS_PER_PAGE);
+        $totalPages = $result['total'] > 0 ? (int) ceil($result['total'] / self::EVENTS_PER_PAGE) : 1;
+
         return $this->render('event/index.html.twig', [
-            'events' => $eventRepository->findVisibleForUser($user),
+            'events' => $result['events'],
+            'filters' => $filters,
+            'current_page' => $page,
+            'total_pages' => $totalPages,
+            'total_events' => $result['total'],
         ]);
     }
 
@@ -83,7 +105,7 @@ final class EventController extends AbstractController
      */
     #[Route('/{id}/reserve', name: 'app_event_reserve', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function reserve(Request $request, Event $event, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository): Response
+    public function reserve(Request $request, Event $event, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository, TranslatorInterface $translator): Response
     {
         if (!$this->isGranted('EVENT_VIEW', $event)) {
             throw new NotFoundHttpException('Événement non trouvé.');
@@ -95,18 +117,18 @@ final class EventController extends AbstractController
         }
 
         if (!$this->isCsrfTokenValid('event_reserve_' . $event->getId(), (string) $request->request->get('_token'))) {
-            $this->addFlash('error', 'Jeton de sécurité invalide. Veuillez réessayer.');
+            $this->addFlash('error', $translator->trans('flash.csrf_invalid'));
             return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
 
         $existing = $reservationRepository->findOneByEventAndParticipant($event, $user);
         if ($existing !== null) {
-            $this->addFlash('error', 'Vous avez déjà une réservation pour cet événement.');
+            $this->addFlash('error', $translator->trans('flash.already_reserved'));
             return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
 
         if ($event->getReservations()->count() >= $event->getMaxCapacity()) {
-            $this->addFlash('error', 'Cet événement est complet.');
+            $this->addFlash('error', $translator->trans('flash.event_full'));
             return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -118,7 +140,7 @@ final class EventController extends AbstractController
         $entityManager->persist($reservation);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Votre réservation a bien été enregistrée.');
+        $this->addFlash('success', $translator->trans('flash.reservation_saved'));
         return $this->redirectToRoute('app_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
     }
 

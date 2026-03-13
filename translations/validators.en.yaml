@@ -1,0 +1,3 @@
+# Validation constraint messages — English
+event.max_capacity.negative: 'Capacity cannot be negative.'
+event.start_date.past: 'The start date cannot be in the past.'

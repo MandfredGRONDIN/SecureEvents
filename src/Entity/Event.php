@@ -8,8 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
+#[Assert\Callback(callback: [Event::class, 'validateStartDateNotPast'])]
 class Event
 {
     /** @var int|null Identifiant de l'événement */
@@ -37,6 +40,7 @@ class Event
 
     #[ORM\Column]
     #[Groups(['api:event:list'])]
+    #[Assert\GreaterThanOrEqual(0, message: 'event.max_capacity.negative')]
     private ?int $maxCapacity = null;
 
     #[ORM\Column]
@@ -44,10 +48,10 @@ class Event
     private ?bool $isPublished = null;
 
     /**
-     * Créateur de l'événement. Tout événement doit avoir un créateur.
+     * Créateur de l'événement. Nullable si le créateur a supprimé son compte.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $createdBy = null;
 
     /**
@@ -59,6 +63,23 @@ class Event
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+    }
+
+    /**
+     * Vérifie que la date de début n'est pas antérieure à aujourd'hui.
+     */
+    public static function validateStartDateNotPast(self $event, ExecutionContextInterface $context): void
+    {
+        $startDate = $event->getStartDate();
+        if ($startDate === null) {
+            return;
+        }
+        $today = new \DateTimeImmutable('today');
+        if ($startDate < $today) {
+            $context->buildViolation('event.start_date.past')
+                ->atPath('startDate')
+                ->addViolation();
+        }
     }
 
     public function getId(): ?int

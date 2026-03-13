@@ -19,5 +19,10 @@ services:
     App\:
         resource: '../src/'
 
+    # Locale par défaut pour le souscripteur de locale (cohérent avec framework.default_locale)
+    App\EventSubscriber\LocaleSubscriber:
+        arguments:
+            $defaultLocale: '%kernel.default_locale%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inscription — SecureEvents{% endblock %}
+{% block title %}{{ 'form.registration.title'|trans }} — SecureEvents{% endblock %}
 
 {% block body %}
 <div class="mx-auto max-w-md">
     <div class="rounded-2xl border border-cyan-200/15 bg-ink-900/40 p-8 shadow-glow">
-        <h1 class="font-display text-xl tracking-wide text-slate-100 mb-6">Créer un compte</h1>
+        <h1 class="font-display text-xl tracking-wide text-slate-100 mb-6">{{ 'form.registration.title'|trans }}</h1>
 
         {{ form_errors(registrationForm) }}
 
@@ -13,19 +13,17 @@
             {{ form_row(registrationForm.email) }}
             {{ form_row(registrationForm.firstName) }}
             {{ form_row(registrationForm.lastName) }}
-            {{ form_row(registrationForm.plainPassword, {
-                label: 'Password'
-            }) }}
+            {{ form_row(registrationForm.plainPassword) }}
             {{ form_row(registrationForm.agreeTerms) }}
 
             <button type="submit"
                     class="w-full rounded-lg bg-gradient-to-r from-neon-500/90 to-cyan-500/90 px-4 py-3 font-medium text-ink-950 shadow-glow transition hover:shadow-glowStrong focus:outline-none focus:ring-2 focus:ring-neon-400/40">
-                S'inscrire
+                {{ 'form.registration.submit'|trans }}
             </button>
 
             <p class="text-center text-sm text-slate-400">
-                Déjà un compte ?
-                <a href="{{ path('app_login') }}" class="font-medium text-cyan-300 hover:text-cyan-200 underline underline-offset-2">Se connecter</a>
+                {{ 'form.registration.has_account'|trans }}
+                <a href="{{ path('app_login') }}" class="font-medium text-cyan-300 hover:text-cyan-200 underline underline-offset-2">{{ 'form.registration.login_link'|trans }}</a>
             </p>
         {{ form_end(registrationForm) }}
     </div>

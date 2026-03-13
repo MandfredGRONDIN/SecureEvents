@@ -15,8 +15,8 @@
                 })
             }) }}
             <div class="is-published-segment">
-                <label for="{{ form.vars.id }}" class="seg seg-on">Published</label>
-                <label for="{{ form.vars.id }}" class="seg seg-off">Not published</label>
+                <label for="{{ form.vars.id }}" class="seg seg-on">{{ 'form.event.published_on'|trans }}</label>
+                <label for="{{ form.vars.id }}" class="seg seg-off">{{ 'form.event.not_published'|trans }}</label>
             </div>
             {{ form_errors(form) }}
         </div>

@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/reservation')]
 #[IsGranted('ROLE_USER')]
@@ -38,7 +39,7 @@ final class ReservationController extends AbstractController
      * Un même utilisateur ne peut réserver qu'une fois par événement ; la capacité max est vérifiée.
      */
     #[Route('/new', name: 'app_reservation_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ReservationRepository $reservationRepository, TranslatorInterface $translator): Response
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
@@ -56,22 +57,22 @@ final class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $event = $reservation->getEvent();
             if ($event === null) {
-                $this->addFlash('error', 'Veuillez sélectionner un événement.');
+                $this->addFlash('error', $translator->trans('flash.select_event'));
                 return $this->render('reservation/new.html.twig', ['reservation' => $reservation, 'form' => $form]);
             }
             $existing = $reservationRepository->findOneByEventAndParticipant($event, $user);
             if ($existing !== null) {
-                $this->addFlash('error', 'Vous avez déjà une réservation pour cet événement.');
+                $this->addFlash('error', $translator->trans('flash.already_reserved'));
                 return $this->render('reservation/new.html.twig', ['reservation' => $reservation, 'form' => $form]);
             }
             if ($event->getReservations()->count() >= $event->getMaxCapacity()) {
-                $this->addFlash('error', 'Cet événement est complet.');
+                $this->addFlash('error', $translator->trans('flash.event_full'));
                 return $this->render('reservation/new.html.twig', ['reservation' => $reservation, 'form' => $form]);
             }
             $entityManager->persist($reservation);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Réservation enregistrée.');
+            $this->addFlash('success', $translator->trans('flash.reservation_saved_short'));
             return $this->redirectToRoute('app_reservation_index', [], Response::HTTP_SEE_OTHER);
         }
 

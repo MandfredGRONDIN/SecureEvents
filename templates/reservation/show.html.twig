@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reservation{% endblock %}
+{% block title %}{{ 'app.reservation.show_title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="flex flex-col gap-6">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-                <h1 class="font-display text-2xl tracking-wide text-slate-50">Reservation</h1>
-                <p class="mt-1 text-sm text-slate-400">Vue détaillée — audit-friendly.</p>
+                <h1 class="font-display text-2xl tracking-wide text-slate-50">{{ 'app.reservation.show_title'|trans }}</h1>
+                <p class="mt-1 text-sm text-slate-400">{{ 'app.reservation.show_subtitle'|trans }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ path('app_reservation_index') }}" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">
-                    Retour
+                    {{ 'app.event.back'|trans }}
                 </a>
                 {{ include('reservation/_delete_form.html.twig') }}
             </div>
@@ -24,14 +24,14 @@
                     <dd class="mt-1 text-sm text-slate-100">#{{ reservation.id }}</dd>
                 </div>
                 <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">Created</dt>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.reservation.created'|trans }}</dt>
                     <dd class="mt-1 text-sm text-slate-100">{{ reservation.createdAt ? reservation.createdAt|date('Y-m-d') : '' }}</dd>
                 </div>
             </dl>
 
             <div class="grid gap-6 lg:grid-cols-2">
                 <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
-                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Event</h2>
+                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.title_single'|trans }}</h2>
                     {% if reservation.event %}
                         <div class="text-sm text-slate-100 font-semibold">
                             {{ reservation.event.title }}
@@ -40,26 +40,26 @@
                             {{ reservation.event.startDate ? reservation.event.startDate|date('Y-m-d') : '' }} · {{ reservation.event.location }}
                         </div>
                         <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                            <span>Capacité : {{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }}</span>
+                            <span>{{ 'app.event.capacity'|trans }} : {{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }}</span>
                             {% if reservation.event.isPublished %}
                                 <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 px-2.5 py-1 font-semibold text-emerald-200 ring-1 ring-emerald-300/40">
                                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>
-                                    <span>Published</span>
+                                    <span>{{ 'app.event.published'|trans }}</span>
                                 </span>
                             {% else %}
                                 <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-800/80 px-2.5 py-1 font-semibold text-slate-200 ring-1 ring-slate-500/50">
                                     <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span>
-                                    <span>Unpublished</span>
+                                    <span>{{ 'app.event.unpublished'|trans }}</span>
                                 </span>
                             {% endif %}
                         </div>
                     {% else %}
-                        <p class="text-xs text-slate-500">Event missing.</p>
+                        <p class="text-xs text-slate-500">{{ 'app.event.event_missing'|trans }}</p>
                     {% endif %}
                 </div>
 
                 <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
-                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Créateur de l'événement</h2>
+                    <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">{{ 'app.event.creator'|trans }}</h2>
                     {% if reservation.event and reservation.event.createdBy %}
                         <div class="text-sm text-slate-100 font-semibold">
                             {{ reservation.event.createdBy.firstName }} {{ reservation.event.createdBy.lastName }}
@@ -68,7 +68,7 @@
                             {{ reservation.event.createdBy.email }}
                         </div>
                     {% else %}
-                        <p class="text-sm text-slate-500">Non renseigné</p>
+                        <p class="text-sm text-slate-500">{{ 'app.event.not_set'|trans }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -76,13 +76,13 @@
             {# Liste de tous les participants inscrits à cet événement #}
             {% if reservation.event and reservation.event.reservations|length > 0 %}
                 <div class="border-t border-cyan-200/10 pt-6">
-                    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2">Tous les participants ({{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }})</h2>
-                    <p class="text-xs text-slate-500 mb-3">Utilisateurs inscrits à cet événement.</p>
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2">{{ 'app.event.participants'|trans }} ({{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }})</h2>
+                    <p class="text-xs text-slate-500 mb-3">{{ 'app.event.participants_subtitle'|trans }}</p>
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {% for resa in reservation.event.reservations %}
                             <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
                                 <div class="font-medium {{ app.user and resa.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ resa.participant.firstName }} {{ resa.participant.lastName }}</div>
-                                <div class="mt-2 text-xs text-slate-500">Réservé le {{ resa.createdAt ? resa.createdAt|date('d/m/Y') : '—' }}</div>
+                                <div class="mt-2 text-xs text-slate-500">{{ 'app.event.reserved_on'|trans }} {{ resa.createdAt ? resa.createdAt|date('d/m/Y') : '—' }}</div>
                             </div>
                         {% endfor %}
                     </div>

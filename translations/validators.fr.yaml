@@ -1,0 +1,3 @@
+# Messages des contraintes de validation — Français
+event.max_capacity.negative: 'La capacité ne peut pas être négative.'
+event.start_date.past: "La date de début ne peut pas être antérieure à aujourd'hui."

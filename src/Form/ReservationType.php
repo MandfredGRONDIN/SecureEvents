@@ -22,7 +22,8 @@ class ReservationType extends AbstractType
                     $event->getId(),
                     (string) $event->getTitle()
                 ),
-                'placeholder' => 'Select an event',
+                'placeholder' => 'form.reservation.event_placeholder',
+                'label' => 'form.reservation.event',
             ])
         ;
     }
@@ -31,6 +32,7 @@ class ReservationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Reservation::class,
+            'translation_domain' => 'messages',
         ]);
     }
 }

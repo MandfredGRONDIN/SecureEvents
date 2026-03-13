@@ -159,32 +159,50 @@
                 </a>
 
                 <nav class="flex items-center gap-2 text-sm">
-                    <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_event_index') }}">Events</a>
+                    <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_event_index') }}">{{ 'app.nav.events'|trans }}</a>
                     {% if app.user %}
-                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_reservation_index') }}">Mes reservations</a>
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_reservation_index') }}">{{ 'app.nav.my_reservations'|trans }}</a>
                     {% endif %}
                     {% if is_granted('ROLE_ADMIN') %}
-                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_user_index') }}">Users</a>
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_admin_index') }}">{{ 'app.nav.admin'|trans }}</a>
                     {% endif %}
                     {% if app.user %}
-                        <span class="rounded-lg border border-cyan-200/20 bg-ink-800/50 px-3 py-2 text-cyan-200/90 text-xs" title="Compte connecté">
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_profile_edit') }}">{{ 'app.nav.profile'|trans }}</a>
+                    {% endif %}
+                    <span class="rounded-lg border border-slate-600/50 bg-ink-800/40 px-2 py-1.5 text-xs text-slate-400">
+                        <a href="{{ path('app_locale_switch', { _locale: 'fr' }) }}" class="{{ app.request.locale == 'fr' ? 'text-cyan-200 font-semibold' : 'hover:text-slate-200' }}">FR</a>
+                        <span class="text-slate-600 mx-1">|</span>
+                        <a href="{{ path('app_locale_switch', { _locale: 'en' }) }}" class="{{ app.request.locale == 'en' ? 'text-cyan-200 font-semibold' : 'hover:text-slate-200' }}">EN</a>
+                    </span>
+                    {% if app.user %}
+                        <span class="rounded-lg border border-cyan-200/20 bg-ink-800/50 px-3 py-2 text-cyan-200/90 text-xs" title="{{ 'app.nav.account_connected'|trans }}">
                             {{ app.user.firstName }} {{ app.user.lastName }}
                         </span>
-                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_logout') }}">Déconnexion</a>
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_logout') }}">{{ 'app.nav.logout'|trans }}</a>
                     {% else %}
-                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_login') }}">Connexion</a>
+                        <a class="rounded-lg px-3 py-2 text-slate-300 hover:text-slate-100 hover:bg-white/5" href="{{ path('app_login') }}">{{ 'app.nav.login'|trans }}</a>
                     {% endif %}
                 </nav>
             </div>
         </header>
 
         <main class="mx-auto w-full max-w-6xl px-4 py-10">
+            {% for message in app.flashes('success') %}
+                <div class="mb-4 rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-4 py-3 text-sm text-cyan-200">
+                    {{ message|trans }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="mb-4 rounded-lg border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+                    {{ message|trans }}
+                </div>
+            {% endfor %}
             {% block body %}{% endblock %}
         </main>
 
         <footer class="border-t border-cyan-200/10">
             <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 text-xs text-slate-400">
-                <span>SecureEvents — hardened UI baseline</span>
+                <span>{{ 'app.footer.baseline'|trans }}</span>
                 <span class="font-display text-slate-500">v1</span>
             </div>
         </footer>

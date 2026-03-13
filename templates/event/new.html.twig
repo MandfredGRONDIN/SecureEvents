@@ -5,15 +5,15 @@
 {% block body %}
     <div class="flex flex-col gap-6">
         <div>
-            <h1 class="font-display text-2xl tracking-wide text-slate-50">Create event</h1>
-            <p class="mt-1 text-sm text-slate-400">Nouveau signal dans votre calendrier, prêt à être publié.</p>
+            <h1 class="font-display text-2xl tracking-wide text-slate-50">{{ 'app.event.create'|trans }}</h1>
+            <p class="mt-1 text-sm text-slate-400">{{ 'app.event.new_subtitle'|trans }}</p>
         </div>
 
         {{ include('event/_form.html.twig') }}
 
         <a href="{{ path('app_event_index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-slate-100">
             <span class="font-display">←</span>
-            <span>back to list</span>
+            <span>{{ 'app.event.back_to_list'|trans }}</span>
         </a>
     </div>
 {% endblock %}
