@@ -20,7 +20,7 @@
                 <p class="mt-1 text-sm text-slate-400">{{ 'app.event.show_subtitle'|trans }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ path('app_event_index') }}" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">
+                <a href="{{ path('app_event_index', app.session.get('event_index_filters', {})) }}" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold text-slate-200 ring-1 ring-white/10 hover:bg-white/5 transition">
                     {{ 'app.event.back'|trans }}
                 </a>
                 {% if is_granted('EVENT_EDIT', event) %}
@@ -120,21 +120,25 @@
                 {% endif %}
             </div>
 
-            {# Tous les utilisateurs qui participent à cet événement #}
+            {# Participants : compteur pour tous, liste détaillée réservée aux admins #}
             <div class="mt-8 border-t border-cyan-200/10 pt-6">
                 <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">{{ 'app.event.participants'|trans }} ({{ event.reservations|length }} / {{ event.maxCapacity }})</h2>
-                <p class="text-xs text-slate-500 mb-3">{{ 'app.event.participants_subtitle'|trans }}</p>
-                {% if event.reservations|length > 0 %}
-                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {% for reservation in event.reservations %}
-                            <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4 shadow-glow">
-                                <div class="font-medium {{ app.user and reservation.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ reservation.participant.firstName }} {{ reservation.participant.lastName }}</div>
-                                <div class="mt-2 text-xs text-slate-500">{{ 'app.event.reserved_on'|trans }} {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y') : '—' }}</div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <p class="text-xs text-slate-500 mb-3">{{ 'app.event.participants_subtitle'|trans }}</p>
+                    {% if event.reservations|length > 0 %}
+                        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {% for reservation in event.reservations %}
+                                <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4 shadow-glow">
+                                    <div class="font-medium {{ app.user and reservation.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ reservation.participant.firstName }} {{ reservation.participant.lastName }}</div>
+                                    <div class="mt-2 text-xs text-slate-500">{{ 'app.event.reserved_on'|trans }} {{ reservation.createdAt ? reservation.createdAt|date('d/m/Y') : '—' }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-slate-500">{{ 'app.event.no_participants'|trans }}</p>
+                    {% endif %}
                 {% else %}
-                    <p class="text-sm text-slate-500">{{ 'app.event.no_participants'|trans }}</p>
+                    <p class="text-sm text-slate-500">{{ 'app.event.participants_count_only'|trans }}</p>
                 {% endif %}
             </div>
         </div>

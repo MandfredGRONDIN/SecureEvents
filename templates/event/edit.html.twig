@@ -2,6 +2,36 @@
 
 {% block title %}{{ 'app.event.edit_title'|trans }}{% endblock %}
 
+{% block footer_scripts %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var el = document.querySelector('.event-start-date-picker');
+            if (el && typeof flatpickr !== 'undefined') {
+                flatpickr(el, {
+                    minDate: 'today',
+                    dateFormat: 'Y-m-d',
+                    locale: document.documentElement.lang === 'fr' ? 'fr' : 'default'
+                });
+            }
+        });
+    </script>
+    <style>
+        /* Dates passées (non sélectionnables) grisées dans le calendrier */
+        .flatpickr-day.flatpickr-disabled,
+        .flatpickr-day.prevMonth.flatpickr-disabled,
+        .flatpickr-day.nextMonth.flatpickr-disabled {
+            color: #64748b !important;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <div class="flex flex-col gap-6">
         <div class="flex items-start justify-between gap-4">
@@ -16,7 +46,7 @@
 
         {{ include('event/_form.html.twig', {'button_label': 'app.event.update'|trans}) }}
 
-        <a href="{{ path('app_event_index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-slate-100">
+        <a href="{{ path('app_event_index', app.session.get('event_index_filters', {})) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-slate-100">
             <span class="font-display">←</span>
             <span>{{ 'app.event.back_to_list'|trans }}</span>
         </a>

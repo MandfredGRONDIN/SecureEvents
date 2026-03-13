@@ -73,19 +73,23 @@
                 </div>
             </div>
 
-            {# Liste de tous les participants inscrits à cet événement #}
-            {% if reservation.event and reservation.event.reservations|length > 0 %}
+            {# Liste des participants : visible uniquement aux admins ; sinon affichage du compteur uniquement #}
+            {% if reservation.event %}
                 <div class="border-t border-cyan-200/10 pt-6">
                     <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-2">{{ 'app.event.participants'|trans }} ({{ reservation.event.reservations|length }} / {{ reservation.event.maxCapacity }})</h2>
-                    <p class="text-xs text-slate-500 mb-3">{{ 'app.event.participants_subtitle'|trans }}</p>
-                    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {% for resa in reservation.event.reservations %}
-                            <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
-                                <div class="font-medium {{ app.user and resa.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ resa.participant.firstName }} {{ resa.participant.lastName }}</div>
-                                <div class="mt-2 text-xs text-slate-500">{{ 'app.event.reserved_on'|trans }} {{ resa.createdAt ? resa.createdAt|date('d/m/Y') : '—' }}</div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    {% if is_granted('ROLE_ADMIN') and reservation.event.reservations|length > 0 %}
+                        <p class="text-xs text-slate-500 mb-3">{{ 'app.event.participants_subtitle'|trans }}</p>
+                        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {% for resa in reservation.event.reservations %}
+                                <div class="rounded-xl border border-cyan-200/10 bg-black/10 p-4">
+                                    <div class="font-medium {{ app.user and resa.participant.id == app.user.id ? 'text-cyan-200' : 'text-slate-100' }}">{{ resa.participant.firstName }} {{ resa.participant.lastName }}</div>
+                                    <div class="mt-2 text-xs text-slate-500">{{ 'app.event.reserved_on'|trans }} {{ resa.createdAt ? resa.createdAt|date('d/m/Y') : '—' }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-slate-500">{{ 'app.event.participants_count_only'|trans }}</p>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

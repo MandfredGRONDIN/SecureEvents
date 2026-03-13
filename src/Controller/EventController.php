@@ -22,14 +22,27 @@ final class EventController extends AbstractController
 {
     private const EVENTS_PER_PAGE = 9;
 
+    /** Clé de session pour persister les filtres de la liste des événements. */
+    private const SESSION_FILTERS_KEY = 'event_index_filters';
+
     /**
      * Liste des événements visibles pour l'utilisateur, avec filtres et pagination.
+     * Les filtres sont lus depuis la requête ; s'ils sont vides, on reprend ceux enregistrés en session (persistance).
      */
     #[Route(name: 'app_event_index', methods: ['GET'])]
     public function index(Request $request, EventService $eventService): Response
     {
         $user = $this->getUser();
-        $filters = [
+        $session = $request->getSession();
+
+        // Clic sur « Réinitialiser » : vider les filtres en session et rediriger sans paramètres
+        if ($request->query->has('reset')) {
+            $session->remove(self::SESSION_FILTERS_KEY);
+
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $fromRequest = [
             'q' => $request->query->getString('q'),
             'from_date' => $request->query->getString('from_date'),
             'to_date' => $request->query->getString('to_date'),
@@ -37,6 +50,19 @@ final class EventController extends AbstractController
             'published' => $request->query->getString('published'),
             'category' => $request->query->getString('category'),
         ];
+
+        // Si la requête contient au moins un paramètre de filtre (ex. soumission du formulaire), on utilise ces valeurs et on les persiste.
+        // Ainsi, si l'utilisateur vide un filtre puis clique sur Filtrer, les nouveaux critères (y compris vides) sont bien appliqués.
+        $requestHasFilterParams = $request->query->has('q') || $request->query->has('from_date')
+            || $request->query->has('to_date') || $request->query->has('location')
+            || $request->query->has('published') || $request->query->has('category');
+        if ($requestHasFilterParams) {
+            $filters = $fromRequest;
+            $session->set(self::SESSION_FILTERS_KEY, $filters);
+        } else {
+            $filters = $session->get(self::SESSION_FILTERS_KEY, $fromRequest);
+        }
+
         $page = max(1, (int) $request->query->get('page', 1));
 
         $data = $eventService->getListData($user, $filters, $page, self::EVENTS_PER_PAGE);

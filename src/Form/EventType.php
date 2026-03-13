@@ -25,7 +25,10 @@ class EventType extends AbstractType
             ->add('startDate', null, [
                 'widget' => 'single_text',
                 'label' => 'form.event.start_date',
-                'attr' => ['min' => (new \DateTimeImmutable('today'))->format('Y-m-d')],
+                'attr' => [
+                    'min' => (new \DateTimeImmutable('today'))->format('Y-m-d'),
+                    'class' => 'event-start-date-picker',
+                ],
             ])
             ->add('location', null, [
                 'label' => 'form.event.location',
