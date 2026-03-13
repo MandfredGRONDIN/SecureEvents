@@ -12,6 +12,54 @@ Projet de classe — application Symfony dockerisée. Gestion d'événements ave
 
 ---
 
+## Fichier .env et création
+
+Le projet utilise un fichier **`.env`** à la racine pour les variables d’environnement (configuration Symfony, base de données, mailer). Ce fichier **n’est pas versionné** (il est dans le `.gitignore`) : il doit être créé localement après avoir récupéré le code.
+
+### Création du fichier .env
+
+**1. Créer le fichier à la racine du projet** (dans le même répertoire que `composer.json` et le `Makefile`) :
+
+```bash
+cd SecureEvents
+touch .env
+```
+
+**2. Y copier le contenu minimal suivant** (à adapter si besoin) :
+
+```env
+###> symfony/framework-bundle ###
+APP_ENV=dev
+APP_SECRET=changez-moi-en-production
+APP_SHARE_DIR=var/share
+###< symfony/framework-bundle ###
+
+###> symfony/routing ###
+DEFAULT_URI=http://localhost
+###< symfony/routing ###
+
+###> doctrine/doctrine-bundle ###
+# Pour Docker : ces variables sont lues par compose ; l’app reçoit DATABASE_URL via compose.override.yaml
+DATABASE_URL="postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8"
+###< doctrine/doctrine-bundle ###
+
+###> symfony/messenger ###
+MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+###< symfony/messenger ###
+
+###> symfony/mailer ###
+MAILER_DSN=null://null
+###< symfony/mailer ###
+```
+
+**3. Avec Docker** : au lancement de `make up`, Docker Compose lit ce `.env` pour les variables éventuelles (ex. `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`). Le conteneur **app** reçoit déjà une `DATABASE_URL` correcte pour le service `database` via `compose.override.yaml`. Vous n’avez pas besoin de modifier `DATABASE_URL` dans le `.env` pour faire tourner l’app en Docker.
+
+**4. Surcharges locales** : pour des valeurs propres à votre machine (mots de passe, clés), utilisez **`.env.local`** (lui aussi non versionné). Les variables qu’il définit écrasent celles du `.env`.
+
+Résumé : créer un `.env` à la racine avec le bloc ci-dessus suffit pour le développement avec Docker. En production, ne pas mettre de secrets dans un fichier versionné ; utiliser les mécanismes recommandés par Symfony (secrets, variables d’environnement du serveur).
+
+---
+
 ## Build et installation du projet
 
 À faire une fois après avoir récupéré le code (clone ou téléchargement).
@@ -134,6 +182,9 @@ make seed-events COUNT=40
 ### Récap : chaîne complète (depuis un clone vide)
 
 Pour une machine qui n'a jamais lancé le projet (build + installation + BDD + données démo) :
+
+1. **Créer le fichier `.env`** à la racine (voir la section [Fichier .env et création](#fichier-env-et-création)).
+2. Puis exécuter :
 
 ```bash
 cd SecureEvents
