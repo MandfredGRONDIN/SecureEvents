@@ -47,7 +47,3 @@ _(Fonctionnalités ou évolutions non réalisées par manque de temps ou de prio
 - **Recherche avancée** : filtres par créateur, par plage de capacité, ou combinaison de critères plus riche.
 - **Mode sombre pour Flatpickr** : thème du calendrier entièrement aligné avec l’interface sombre de l’application.
 - **Tests E2E** : scénarios complets (inscription, création d’événement, réservation, réinitialisation des filtres) avec un outil type Playwright ou Cypress.
-
----
-
-*À remplir avant la livraison du 15/03/26.*
